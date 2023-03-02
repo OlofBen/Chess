@@ -1,4 +1,3 @@
-import React from "react";
 import "./Chessboard.css";
 
 const vertical = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -8,11 +7,11 @@ export default function Chessboard() {
   let squares:JSX.Element[] = [];
   horizontal.forEach((h) => {
     vertical.forEach((v) => {
-      let spuare = isWhite(squares.length) 
+      let square = isWhite(squares.length) 
         ? <span className="square square-white">{v + h}</span> 
         : <span className="square square-black">{v + h}</span>
       
-      squares.push(spuare);
+      squares.push(square);
     });
   });
   return <div id="chessboard">{squares}</div>;
