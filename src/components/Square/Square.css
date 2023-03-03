@@ -1,0 +1,21 @@
+.square {
+    width: 1fr;
+    height: 1fr;
+    display: grid;
+    place-content: center;
+}
+
+.square-black {
+    background-color: darkolivegreen;
+}
+
+.square-white {
+    background-color: wheat;
+}
+
+.square img{
+    /* TODO: make pieces scale with board */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
