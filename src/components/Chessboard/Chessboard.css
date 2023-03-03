@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    width: 800px;
-    height: 800px;
+    width: 500px;
+    height: 500px;
     background-color: palegoldenrod;
 }

@@ -8,6 +8,11 @@ function isWhite(row: number, col: string) {
 
 export default function Square(props: { row: number, column: string, image?: string}) {
     let className = isWhite(props.row, props.column) ? "square square-white" : "square square-black";
-    return <span className={className}><img src={props.image}/></span>
+    return <div className={className}>
+            {
+            (props.image) && 
+            <div style={{backgroundImage: `url(${props.image})`}} className="piece"></div>
+            }
+        </div>
 
 }
