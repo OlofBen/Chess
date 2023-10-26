@@ -1,0 +1,29 @@
+package chess.pieces
+
+import chess._
+
+class Pawn(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
+  def moves(board: Board): Set[Position] =
+    val direction = color match
+      case Color.White => 1
+      case Color.Black => -1
+    val oneForward = position.moved(rowDelta = direction)
+    val twoForward = position.moved(rowDelta = 2 * direction)
+    val forwardMoves = 
+      (if board.isPieceAt(oneForward) then Set.empty
+      else if hasMoved || board.isPieceAt(twoForward) then Set(oneForward)
+      else Set(oneForward, twoForward))
+    val diagonalMoves = 
+      Set(position.moved(direction, - 1),
+          position.moved(direction, + 1))
+        .filter(board.isPieceAt)
+    (forwardMoves ++ diagonalMoves).filter(_.isInside)
+  def movedTo(to: Position): Piece = 
+    Pawn(to, color, hasMoved = true)
+    // TODO: Implement promotion
+
+  override def toString(): String = 
+    color match
+      case Color.Black => "♙"
+      case Color.White => "♟︎"
+      
