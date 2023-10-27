@@ -107,4 +107,58 @@ class BoardFunSuite extends AnyFunSuite {
   }
 
 
+  // CASTLING
+  test("Castling white king side") {
+    val king = King(Position("e1"), Color.White)
+    val board = Board.emptyWith(Vector(
+      king,
+      Rook(Position("h1"), Color.White)
+    ))
+    require(king.moves(board).contains(Position("g1")), "King can't castle")
+    val newBoard = board.move("e1g1")
+    require(newBoard.get(Position("g1")).isDefined, "King is not in g1")
+    require(newBoard.get(Position("f1")).isDefined, "Rook is not in f1")
+    require(newBoard.get(Position("e1")).isEmpty)
+    require(newBoard.get(Position("h1")).isEmpty)
+  }
+
+  test("Castling white queen side") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e1"), Color.White),
+      Rook(Position("a1"), Color.White)
+    ))
+    val newBoard = board.move("e1c1")
+    require(newBoard.get(Position("c1")).isDefined, "King is not in c1")
+    require(newBoard.get(Position("d1")).isDefined, "Rook is not in d1")
+    require(newBoard.get(Position("e1")).isEmpty)
+    require(newBoard.get(Position("a1")).isEmpty)
+  }
+
+  test("Castling black king side") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e8"), Color.Black),
+      Rook(Position("h8"), Color.Black)
+    ))
+    board.nextTurn()
+    val newBoard = board.move("e8g8")
+    require(newBoard.get(Position("g8")).isDefined, "King is not in g8")
+    require(newBoard.get(Position("f8")).isDefined, "Rook is not in f8")
+    require(newBoard.get(Position("e8")).isEmpty)
+    require(newBoard.get(Position("h8")).isEmpty)
+  }
+
+  test("Castling black queen side") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e8"), Color.Black),
+      Rook(Position("a8"), Color.Black)
+    ))
+    board.nextTurn()
+    val newBoard = board.move("e8c8")
+    require(newBoard.get(Position("c8")).isDefined, "King is not in c8")
+    require(newBoard.get(Position("d8")).isDefined, "Rook is not in d8")
+    require(newBoard.get(Position("e8")).isEmpty)
+    require(newBoard.get(Position("a8")).isEmpty)
+  }
+
+
 }

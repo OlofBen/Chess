@@ -3,6 +3,15 @@ package chess
 case class Position(row: Int, col: Int):
   def moved(rowDelta: Int = 0, colDelta: Int = 0): Position = 
     Position(row + rowDelta, col + colDelta)
+
+  /**
+    * @return the distance between two positions in manhattan distance
+    */
+  def distanceTo(other : Position) : Int = 
+    val rowDelta = (row - other.row).abs
+    val colDelta = (col - other.col).abs
+    rowDelta + colDelta
+  
   override def toString(): String = 
     s"${Position.rowToLetter.getOrElse(col, "?")}$row"
 

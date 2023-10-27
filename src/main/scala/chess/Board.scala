@@ -4,6 +4,8 @@ import chess.pieces._
 
 class Board private (board: Seq[Seq[Option[Piece]]]):
   lazy val pieces : Set[Piece] = board.flatten.flatten.toSet
+  var turn: Color = Color.White
+  def nextTurn(): Unit = turn = turn.opposite
 
   /*
     If outside get returns None
@@ -21,11 +23,18 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
     val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, None))
     Board(newBoard)
 
-  def move(from: Position, to: Position): Board =
+  def move(from: Position, to: Position): Board = 
     require(isPieceAt(from), "No piece at position")
-    val piece = get(from.row, from.col).get
-    remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
-
+    require(isPieceAtWhitColor(from, turn), "Wrong color")
+    require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
+    require(get(from).get.moves(this).contains(to), "Illegal move")
+    nextTurn()
+    if get(from).exists(_.isInstanceOf[King]) && from.distanceTo(to) == 2 then 
+      castleMove(from, to)
+    else
+      val piece = get(from.row, from.col).get
+      remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
+    
   def move(line: String): Board = 
     val from = Position(line.take(2))
     val to = Position(line.drop(2))
@@ -37,6 +46,16 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
 
   def move(piecePos : (Piece, Position)): Board = 
     move(piecePos._1.position, piecePos._2)
+
+  def castleMove(from: Position, to: Position): Board = 
+    val king = get(from).get
+    val rookCol = if to.col == 3 then 1 else 8
+    val rook = get(to.row, rookCol).get
+    val newRookCol = if to.col == 3 then 4 else 6
+    remove(from.row, from.col)
+      .remove(from.row, rookCol)
+      .set(to.row, to.col, king.movedTo(to))
+      .set(to.row, newRookCol, rook.movedTo(Position(to.row, newRookCol)))
 
 
   def isPieceAt(position: Position): Boolean = 

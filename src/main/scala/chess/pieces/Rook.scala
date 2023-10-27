@@ -2,12 +2,12 @@ package chess.pieces
 
 import chess._
 
-class Rook(val position: Position, val color: Color) extends Piece:
+class Rook(val position: Position, val color: Color, val hasMoved: Boolean = false) extends Piece:
   def moves(board: Board): Set[Position] =
     straitMoves(board, position, Rook.directions, color) 
     
   def movedTo(to: Position): Piece = 
-    Rook(to, color)
+    Rook(to, color, true)
 
   override def toString(): String = 
     color match

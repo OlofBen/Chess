@@ -44,3 +44,28 @@ class TranslatorFunSuite extends AnyFunSuite:
     require(newBoard.get(Position("f8")).isDefined)
     require(newBoard.get(Position("d8")).isEmpty)
   }
+
+  test("Kingside castle") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e1"), Color.White),
+      Rook(Position("h1"), Color.White)
+    ))
+    val newBoard = board.moveAlgebraicNotation("O-O")
+    require(newBoard.get(Position("g1")).isDefined)
+    require(newBoard.get(Position("f1")).isDefined)
+    require(newBoard.get(Position("e1")).isEmpty)
+    require(newBoard.get(Position("h1")).isEmpty)
+  }
+
+  test("Queenside castle") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e1"), Color.White),
+      Rook(Position("a1"), Color.White)
+    ))
+    val newBoard = board.moveAlgebraicNotation("O-O-O")
+    require(newBoard.get(Position("c1")).isDefined)
+    require(newBoard.get(Position("d1")).isDefined)
+    require(newBoard.get(Position("e1")).isEmpty)
+    require(newBoard.get(Position("a1")).isEmpty)
+  }
+
