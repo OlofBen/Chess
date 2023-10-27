@@ -9,7 +9,7 @@ class King(val position: Position, val color: Color) extends Piece:
       colDelta <- -1 to 1
       if !(rowDelta == 0 && colDelta == 0)
       to = position.moved(rowDelta, colDelta)
-      if to.isInside
+      if to.isInside && !board.isPieceAtWhitColor(to, color)
     yield to).toSet
     
   def movedTo(to: Position): Piece = 

@@ -6,7 +6,7 @@ class Knight(val position: Position, val color: Color) extends Piece:
   def moves(board: Board): Set[Position] =
     (for (rowDelta, colDelta) <- Knight.directions yield 
       position.moved(rowDelta, colDelta)
-    ).filter(_.isInside).toSet
+    ).filter(_.isInside).filter(!board.isPieceAtWhitColor(_, color)).toSet
               
   def movedTo(to: Position): Piece = 
     Knight(to, color)

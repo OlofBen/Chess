@@ -1,10 +1,7 @@
 package chess
 
 import org.scalatest.funsuite.AnyFunSuite
-import chess.pieces.Rook
-import chess.pieces.Pawn
-import chess.pieces.Queen
-import chess.pieces.Knight
+import chess.pieces._
 
 class BoardFunSuite extends AnyFunSuite {
 
@@ -77,6 +74,36 @@ class BoardFunSuite extends AnyFunSuite {
     val knight = board.get(Position("a1")).get
     val moves = knight.moves(board)
     require(moves.size == 2, s"Knight has ${moves.size} moves")
+  }
+
+  test("King can't take own piece") {
+    val board = Board.emptyWith(Vector(
+      King(Position("d4"), Color.White),
+      Pawn(Position("d5"), Color.White)
+    ))
+    val king = board.get(Position("d4")).get
+    val moves = king.moves(board)
+    require(moves.size == 7, s"King has ${moves.size} moves")
+  }
+
+  test("Knight can't take own piece") {
+    val board = Board.emptyWith(Vector(
+      Knight(Position("d4"), Color.White),
+      Pawn(Position("e6"), Color.White)
+    ))
+    val knight = board.get(Position("d4")).get
+    val moves = knight.moves(board)
+    require(moves.size == 7, s"Knight has ${moves.size} moves")
+  }
+
+  test("Pawn can two squares first but then only one") {
+    val board = Board.emptyWith(Vector(
+      Pawn(Position("d2"), Color.White)
+    ))
+    val pawn = board.get(Position("d2")).get
+    val moves = pawn.moves(board)
+    require(moves.size == 2, s"Pawn has ${moves.size} moves")
+    require(pawn.movedTo(Position("d4")).moves(board) == Set(Position("d5")))
   }
 
 
