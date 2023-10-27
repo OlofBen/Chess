@@ -31,6 +31,10 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
     val to = Position(line.drop(2))
     move(from, to)
 
+  def moveAlgebraicNotation(line: String): Board = 
+    val (from, to) = Parser.parse(line, pieces, this)
+    move(from, to)
+
   def move(piecePos : (Piece, Position)): Board = 
     move(piecePos._1.position, piecePos._2)
 
