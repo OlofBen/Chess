@@ -67,7 +67,12 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
   def legalMoves(color: Color) : Set[Move] = 
     pieces.filter(_.color == color).flatMap ( piece => 
       piece.moves(this)
+    ).filter(move => 
+      !moveLeadsToCheck(move)
     )
+  def moveLeadsToCheck(move: Move): Boolean = 
+    val newBoard = this.move(move)
+    newBoard.isChecked(turn)
 
   def isChecked(color: Color): Boolean = 
     pieces.exists { piece => 
