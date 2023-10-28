@@ -103,7 +103,7 @@ class BoardFunSuite extends AnyFunSuite {
     val pawn = board.get(Position("d2")).get
     val moves = pawn.moves(board)
     require(moves.size == 2, s"Pawn has ${moves.size} moves")
-    require(pawn.movedTo(Position("d4")).moves(board) == Set(Position("d5")))
+    require(pawn.movedTo(Position("d4")).moves(board) == Set(Move("d4", "d5")))
   }
 
 
@@ -114,7 +114,7 @@ class BoardFunSuite extends AnyFunSuite {
       king,
       Rook(Position("h1"), Color.White)
     ))
-    require(king.moves(board).contains(Position("g1")), "King can't castle")
+    require(king.moves(board).contains(Move("e1","g1")), "King can't castle")
     val newBoard = board.move("e1g1")
     require(newBoard.get(Position("g1")).isDefined, "King is not in g1")
     require(newBoard.get(Position("f1")).isDefined, "Rook is not in f1")

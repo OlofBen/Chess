@@ -28,7 +28,7 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
     val to = move.to
     require(isPieceAt(from), "No piece at position")
     val piece = get(from).get
-    require(piece.color != turn, "Wrong color")
+    require(piece.color == turn, "Wrong color")
     require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
     require(get(from).get.moves(this).contains(move), "Illegal move")
     nextTurn()
