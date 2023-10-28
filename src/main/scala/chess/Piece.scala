@@ -3,10 +3,10 @@ package chess
 trait Piece: 
   val position: Position
   val color: Color
-  def moves(board : Board): Set[Position]
+  def moves(board : Board): Set[Move]
   def movedTo(to: Position): Piece
 
-  protected def straitMoves(board :Board, startingPosition: Position, directions: Vector[(Int,Int)], colorOfPice: Color): Set[Position] =
+  protected def straitMoves(board :Board, startingPosition: Position, directions: Vector[(Int,Int)], colorOfPice: Color): Set[Move] =
     val moves = 
       for (rowDelta, colDelta) <- directions yield 
         LazyList
@@ -15,7 +15,7 @@ trait Piece:
             Seq(!_.isInside, board.isPieceAtWhitColor(_, colorOfPice)),
             Seq(board.isPieceAtWhitColor(_, colorOfPice.opposite))
           )
-    moves.flatten.toSet   
+    moves.flatten.map(pos => Move(startingPosition, pos)).toSet   
 
 
   extension (xs: Seq[Position]) 

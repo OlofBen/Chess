@@ -23,14 +23,19 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
     val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, None))
     Board(newBoard)
 
-  def move(from: Position, to: Position): Board = 
+  def move(move : Move): Board = 
+    val from = move.from
+    val to = move.to
     require(isPieceAt(from), "No piece at position")
-    require(isPieceAtWhitColor(from, turn), "Wrong color")
+    val piece = get(from).get
+    require(piece.color != turn, "Wrong color")
     require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
-    require(get(from).get.moves(this).contains(to), "Illegal move")
+    require(get(from).get.moves(this).contains(move), "Illegal move")
     nextTurn()
-    if get(from).exists(_.isInstanceOf[King]) && from.distanceTo(to) == 2 then 
+    if piece.isInstanceOf[King] && from.distanceTo(to) == 2 then 
       castleMove(from, to)
+    else if piece.isInstanceOf[Pawn] && to.row == 1 || to.row == 8 then 
+      remove(from.row, from.col).set(to.row, to.col, Queen(to, piece.color))
     else
       val piece = get(from.row, from.col).get
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
@@ -38,14 +43,10 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
   def move(line: String): Board = 
     val from = Position(line.take(2))
     val to = Position(line.drop(2))
-    move(from, to)
-
-  def moveAlgebraicNotation(line: String): Board = 
-    val (from, to) = Parser.parse(line, pieces, this)
-    move(from, to)
+    move(Move(from, to))
 
   def move(piecePos : (Piece, Position)): Board = 
-    move(piecePos._1.position, piecePos._2)
+    move(Move(piecePos._1.position, piecePos._2))
 
   def castleMove(from: Position, to: Position): Board = 
     val king = get(from).get
@@ -63,11 +64,9 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
   def isPieceAtWhitColor(position: Position, color: Color): Boolean = 
     get(position.row, position.col).exists(_.color == color)
 
-  def legalMoves(color: Color) : Set[(Piece, Position)] = 
+  def legalMoves(color: Color) : Set[Move] = 
     pieces.filter(_.color == color).flatMap ( piece => 
-      piece.moves(this).map ( to => 
-        (piece, to)
-      )
+      piece.moves(this)
     )
 
   def isChecked(color: Color): Boolean = 

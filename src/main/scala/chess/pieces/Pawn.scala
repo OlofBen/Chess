@@ -3,7 +3,7 @@ package chess.pieces
 import chess._
 
 class Pawn(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
-  def moves(board: Board): Set[Position] =
+  def moves(board: Board): Set[Move] =
     val direction = color match
       case Color.White => 1
       case Color.Black => -1
@@ -17,10 +17,11 @@ class Pawn(val position: Position, val color: Color, hasMoved:Boolean = false) e
       Set(position.moved(direction, - 1),
           position.moved(direction, + 1))
         .filter(board.isPieceAt)
-    (forwardMoves ++ diagonalMoves).filter(_.isInside)
+    (forwardMoves ++ diagonalMoves).filter(_.isInside).map(to => Move(position, to)).toSet
   def movedTo(to: Position): Piece = 
     Pawn(to, color, hasMoved = true)
-    // TODO: Implement promotion
+  def movedToAndPromotedTo(to: Position, piece: Piece): Piece = 
+    piece.movedTo(to)
 
   override def toString(): String = 
     color match

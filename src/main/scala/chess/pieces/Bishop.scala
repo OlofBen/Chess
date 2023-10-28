@@ -3,7 +3,7 @@ package chess.pieces
 import chess._
 
 class Bishop(val position: Position, val color: Color) extends Piece:
-  def moves(board: Board): Set[Position] =
+  def moves(board: Board): Set[Move] =
     straitMoves(board, position, Bishop.directions, color)
   def movedTo(to: Position): Piece = 
     Bishop(to, color)

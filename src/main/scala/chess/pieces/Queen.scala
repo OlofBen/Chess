@@ -3,8 +3,9 @@ package chess.pieces
 import chess._
 
 class Queen(val position: Position, val color: Color) extends Piece:
-  def moves(board: Board): Set[Position] =
+  def moves(board: Board): Set[Move] =
     straitMoves(board, position, Queen.directions, color) 
+    
   def movedTo(to: Position): Piece = 
     Queen(to, color)
 
