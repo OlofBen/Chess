@@ -2,10 +2,9 @@ package chess
 
 import chess.pieces._
 
-class Board private (board: Seq[Seq[Option[Piece]]]):
+class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.White):
   lazy val pieces : Set[Piece] = board.flatten.flatten.toSet
-  var turn: Color = Color.White
-  def nextTurn(): Unit = turn = turn.opposite
+  def nextTurn(): Board = new Board(board, turn.opposite)
 
   /*
     If outside get returns None
@@ -17,11 +16,11 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
 
   def set(row : Int, col : Int, piece : Piece) : Board = 
     val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, Some(piece)))
-    Board(newBoard)
+    new Board(newBoard, turn)
 
   def remove(row : Int, col : Int) : Board = 
     val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, None))
-    Board(newBoard)
+    new Board(newBoard, turn)
 
   def move(move : Move): Board = 
     val from = move.from
@@ -31,15 +30,15 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
     require(piece.color == turn, "Wrong color")
     require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
     require(get(from).get.moves(this).contains(move), "Illegal move")
-    nextTurn()
-    if piece.isInstanceOf[King] && from.distanceTo(to) == 2 then 
+    (if piece.isInstanceOf[King] && from.distanceTo(to) == 2 then 
       castleMove(from, to)
     else if piece.isInstanceOf[Pawn] && to.row == 1 || to.row == 8 then 
       remove(from.row, from.col).set(to.row, to.col, Queen(to, piece.color))
     else
       val piece = get(from.row, from.col).get
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
-    
+    ).nextTurn()
+
   def move(line: String): Board = 
     val from = Position(line.take(2))
     val to = Position(line.drop(2))
@@ -57,6 +56,7 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
       .remove(from.row, rookCol)
       .set(to.row, to.col, king.movedTo(to))
       .set(to.row, newRookCol, rook.movedTo(Position(to.row, newRookCol)))
+      
 
 
   def isPieceAt(position: Position): Boolean = 
@@ -82,7 +82,7 @@ class Board private (board: Seq[Seq[Option[Piece]]]):
     }
 
   override def toString(): String = 
-    board.map { row => 
+    board.reverse.map { row => 
       row.map { 
         case Some(piece) => piece.toString
         case None => "."

@@ -10,5 +10,5 @@ object Game:
       board = board.move(move)
       println(board)
       val legalMoves = board.legalMoves(Color.Black)
-      val computerMove = legalMoves.toSeq(scala.util.Random.nextInt(legalMoves.size))
+      val computerMove : Move = legalMoves.toSeq(scala.util.Random.nextInt(legalMoves.size))
       board = board.move(computerMove)

@@ -10,7 +10,8 @@ class King(val position: Position, val color: Color, hasMoved:Boolean = false) e
       if !(rowDelta == 0 && colDelta == 0)
       to = position.moved(rowDelta, colDelta)
       if to.isInside && !board.isPieceAtWhitColor(to, color)
-    yield Move(position, to)).toSet ++ castleMoves(board)
+    yield Move(position, to)
+    ).toSet ++ castleMoves(board)
 
   def castleMoves(board: Board): Set[Move] = 
     if hasMoved || isChecked(board) then Set.empty
@@ -32,7 +33,7 @@ class King(val position: Position, val color: Color, hasMoved:Boolean = false) e
     King(to, color, hasMoved=true)
 
   def isChecked(board: Board): Boolean = 
-    board.pieces.exists { piece => 
+    board.pieces.filterNot(_.isInstanceOf[King]).exists { piece => //Cant loop over legal moves, that would be infinite loop
       piece.color != color && piece.moves(board).exists(_.to ==position)
     }
 

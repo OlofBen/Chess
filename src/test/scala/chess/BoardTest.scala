@@ -138,8 +138,7 @@ class BoardFunSuite extends AnyFunSuite {
     val board = Board.emptyWith(Vector(
       King(Position("e8"), Color.Black),
       Rook(Position("h8"), Color.Black)
-    ))
-    board.nextTurn()
+    )).nextTurn()
     val newBoard = board.move("e8g8")
     require(newBoard.get(Position("g8")).isDefined, "King is not in g8")
     require(newBoard.get(Position("f8")).isDefined, "Rook is not in f8")
@@ -151,8 +150,7 @@ class BoardFunSuite extends AnyFunSuite {
     val board = Board.emptyWith(Vector(
       King(Position("e8"), Color.Black),
       Rook(Position("a8"), Color.Black)
-    ))
-    board.nextTurn()
+    )).nextTurn()
     val newBoard = board.move("e8c8")
     require(newBoard.get(Position("c8")).isDefined, "King is not in c8")
     require(newBoard.get(Position("d8")).isDefined, "Rook is not in d8")
