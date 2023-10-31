@@ -5,12 +5,12 @@ case class Position(row: Int, col: Int):
     Position(row + rowDelta, col + colDelta)
 
   /**
-    * @return the distance between two positions in manhattan distance
+    * @return the distance between two positions, a diagonal move counts as 1
     */
   def distanceTo(other : Position) : Int = 
     val rowDelta = (row - other.row).abs
     val colDelta = (col - other.col).abs
-    rowDelta + colDelta
+    Math.max(rowDelta, colDelta)
   
   override def toString(): String = 
     s"${Position.rowToLetter.getOrElse(col, "?")}$row"

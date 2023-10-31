@@ -4,6 +4,9 @@ import chess.pieces._
 
 class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.White):
   lazy val pieces : Set[Piece] = board.flatten.flatten.toSet
+  lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
+  lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
+
   def nextTurn(): Board = new Board(board, turn.opposite)
 
   /*
@@ -32,7 +35,7 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
     require(get(from).get.moves(this).contains(move), "Illegal move")
     (if piece.isInstanceOf[King] && from.distanceTo(to) == 2 then 
       castleMove(from, to)
-    else if piece.isInstanceOf[Pawn] && to.row == 1 || to.row == 8 then 
+    else if piece.isInstanceOf[Pawn] && (to.row == 1 || to.row == 8) then 
       remove(from.row, from.col).set(to.row, to.col, Queen(to, piece.color))
     else
       val piece = get(from.row, from.col).get
@@ -48,8 +51,10 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
     move(Move(piecePos._1.position, piecePos._2))
 
   def castleMove(from: Position, to: Position): Board = 
+    require(get(from).get.isInstanceOf[King], "Can't castle with non king")
     val king = get(from).get
     val rookCol = if to.col == 3 then 1 else 8
+    require(get(to.row, rookCol).get.isInstanceOf[Rook], "Can't castle with non rook")
     val rook = get(to.row, rookCol).get
     val newRookCol = if to.col == 3 then 4 else 6
     remove(from.row, from.col)
@@ -64,12 +69,13 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
   def isPieceAtWhitColor(position: Position, color: Color): Boolean = 
     get(position.row, position.col).exists(_.color == color)
 
-  def legalMoves(color: Color) : Set[Move] = 
-    pieces.filter(_.color == color).flatMap ( piece => 
+  lazy val legalMoves : Set[Move] = 
+    pieces.filter(_.color == turn).flatMap ( piece => 
       piece.moves(this)
     ).filter(move => 
       !moveLeadsToCheck(move)
     )
+  
   def moveLeadsToCheck(move: Move): Boolean = 
     val newBoard = this.move(move)
     newBoard.isChecked(turn)
@@ -88,6 +94,15 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
         case None => "."
       }.mkString
     }.mkString("\n")
+
+  override def hashCode(): Int = 
+    board.hashCode() - turn.hashCode()
+
+  override def equals(x: Any): Boolean = 
+    x match 
+      case other : Board => 
+        pieces == other.pieces && turn == other.turn
+      case _ => false
 
 
 object Board:

@@ -7,8 +7,8 @@ class BoardFunSuite extends AnyFunSuite {
 
   test("An empty board should have no moves") {
     val board = Board.empty
-    require(board.legalMoves(Color.White).isEmpty)
-    require(board.legalMoves(Color.Black).isEmpty)
+    require(board.legalMoves.isEmpty)
+    require(board.nextTurn().legalMoves.isEmpty)
   }
 
   test("A rook should have 14 moves on an empty board") {
@@ -158,5 +158,14 @@ class BoardFunSuite extends AnyFunSuite {
     require(newBoard.get(Position("a8")).isEmpty)
   }
 
+  test("King can not turn in to Queen"){ // Old bug
+    val board = Board.emptyWith(Vector(
+      King(Position("e8"), Color.Black),
+    )).nextTurn()
+    val newBoard = board.move("e8d8")
+    require(newBoard.get(Position("d8")).isDefined, "King is not in d8")
+    require(newBoard.get(Position("e8")).isEmpty)
+    require(newBoard.get(Position("d8")).get.isInstanceOf[King], "Is not a king")
+  }
 
 }
