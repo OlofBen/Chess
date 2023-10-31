@@ -2,7 +2,7 @@ package chess.pieces
 
 import chess._
 
-class King(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
+case class King(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
   def moves(board: Board): Set[Move] = 
     (for 
       rowDelta <- -1 to 1

@@ -2,7 +2,7 @@ package chess.pieces
 
 import chess._
 
-class Pawn(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
+case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
   def moves(board: Board): Set[Move] =
     val direction = color match
       case Color.White => 1

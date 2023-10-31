@@ -2,7 +2,7 @@ package chess.pieces
 
 import chess._
 
-class Knight(val position: Position, val color: Color) extends Piece:
+case class Knight(val position: Position, val color: Color) extends Piece:
   def moves(board: Board): Set[Move] =
     (for (rowDelta, colDelta) <- Knight.directions yield 
       position.moved(rowDelta, colDelta)
