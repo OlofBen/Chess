@@ -4,28 +4,43 @@ class Bot():
   var boardsEvaluated = 0
 
   def bestMove(board: Board, depth: Int): Move =
-    val legalMoves = board.legalMoves
-    legalMoves.maxBy(move => evaluate(board.move(move), depth - 1, Int.MinValue, Int.MaxValue))
+    evaluate(board, depth, Int.MinValue, Int.MaxValue)
+      ._2
+      .getOrElse(throw new Exception("No move found"))
 
-  private def evaluate(board: Board, depth: Int, alpha : Int, beta : Int): Int =
-    val legalMoves = board.legalMoves
-    if depth == 0 || legalMoves.isEmpty then 
-      staticEvaluation(board)
+  private def evaluateMove(board: Board, move: Move, depth: Int, alpha : Int, beta : Int): (Int, Move) =
+    val newBoard = board.move(move)
+    if depth == 0 || board.legalMoves.isEmpty then
+      (staticEvaluation(newBoard), move)
     else
-      var currentAlpha = alpha
-      var currentBeta = beta
-      val getBestValue: Set[Int] => Int = if board.turn == Color.White then _.maxOption.getOrElse(Int.MinValue) else _.minOption.getOrElse(Int.MaxValue)
+      val result = evaluate(newBoard, depth, alpha, beta)
+      if result._2.isEmpty then 
+        (staticEvaluation(newBoard), move)
+      else 
+        (result._1, move)
       
-      val scores = legalMoves.collect( move => move match     
-        case _ if beta > alpha => //Else we have already found a better move
-          val value = evaluate(board.move(move), depth - 1, currentAlpha, currentBeta)
-          if board.turn == Color.White then
-            currentAlpha = Math.max(currentAlpha, value)
-          else
-            currentBeta = Math.min(currentBeta, value)
-          value
-      ) 
-      getBestValue(scores)
+      
+
+  private def evaluate(board: Board, depth: Int, alpha : Int, beta : Int): (Int, Option[Move]) =
+    val legalMoves = board.legalMoves
+    var currentAlpha = alpha
+    var currentBeta = beta
+    val getBestValue: Set[(Int, Move)] => (Int, Option[Move]) = 
+      if board.turn == Color.White then 
+        _.maxByOption(_._1).map((v, m) => (v, Some(m))).getOrElse((Int.MinValue, None))
+      else 
+        _.minByOption(_._1).map((v, m) => (v, Some(m))).getOrElse((Int.MaxValue, None))
+    
+    val scores = legalMoves.collect( move => move match     
+      case _ if beta > alpha => //Else we have already found a better move
+        val value = evaluateMove(board, move, depth - 1, currentAlpha, currentBeta)._1
+        if board.turn == Color.White then
+          currentAlpha = Math.max(currentAlpha, value)
+        else
+          currentBeta = Math.min(currentBeta, value)
+        (value, move)
+    ) 
+    getBestValue(scores)
      
 
 
