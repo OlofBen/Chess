@@ -1,12 +1,19 @@
 package chess
 
 class Bot():
-  var boardsEvaluated = 0
+  private var evaluatePositions = Map.empty[Board, Int]
+
+  def staticEvaluation(board : Board) = 
+    evaluatePositions.get(board) match
+      case Some(value) => value
+      case None => 
+        val value = Evaluation.evaluate(board)
+        evaluatePositions = evaluatePositions + (board -> value)
+        value
 
   def bestMove(board: Board, depth: Int): Move =
-    evaluate(board, depth, Int.MinValue, Int.MaxValue)
-      ._2
-      .getOrElse(throw new Exception("No move found"))
+    val (score, move) = evaluate(board, depth, Int.MinValue, Int.MaxValue)
+    move.getOrElse(throw new Exception("No move found"))
 
   private def evaluateMove(board: Board, move: Move, depth: Int, alpha : Int, beta : Int): (Int, Move) =
     val newBoard = board.move(move)
@@ -31,7 +38,7 @@ class Bot():
       else 
         _.minByOption(_._1).map((v, m) => (v, Some(m))).getOrElse((Int.MaxValue, None))
     
-    val scores = legalMoves.collect( move => move match     
+    val scoresAndMoves = legalMoves.collect( move => move match     
       case _ if beta > alpha => //Else we have already found a better move
         val value = evaluateMove(board, move, depth - 1, currentAlpha, currentBeta)._1
         if board.turn == Color.White then
@@ -40,10 +47,5 @@ class Bot():
           currentBeta = Math.min(currentBeta, value)
         (value, move)
     ) 
-    getBestValue(scores)
+    getBestValue(scoresAndMoves)
      
-
-
-  def staticEvaluation(board : Board) = 
-    boardsEvaluated += 1
-    Evaluation.evaluate(board)
