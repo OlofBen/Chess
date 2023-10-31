@@ -14,20 +14,19 @@ class Bot():
     else
       var currentAlpha = alpha
       var currentBeta = beta
-      if board.turn == Color.White then 
-        legalMoves.collect( move => move match     
-          case _ if beta > alpha => //Else we have already found a better move
-            val value = evaluate(board.move(move), depth - 1, currentAlpha, currentBeta)
+      val getBestValue: Set[Int] => Int = if board.turn == Color.White then _.maxOption.getOrElse(Int.MinValue) else _.minOption.getOrElse(Int.MaxValue)
+      
+      val scores = legalMoves.collect( move => move match     
+        case _ if beta > alpha => //Else we have already found a better move
+          val value = evaluate(board.move(move), depth - 1, currentAlpha, currentBeta)
+          if board.turn == Color.White then
             currentAlpha = Math.max(currentAlpha, value)
-            value
-        ).maxOption.getOrElse(Int.MinValue)
-      else 
-        legalMoves.collect( move => move match
-          case _ if beta > alpha => 
-            val value = evaluate(board.move(move), depth - 1, currentAlpha, currentBeta)
+          else
             currentBeta = Math.min(currentBeta, value)
-            value
-        ).minOption.getOrElse(Int.MaxValue)
+          value
+      ) 
+      getBestValue(scores)
+     
 
 
   def staticEvaluation(board : Board) = 
