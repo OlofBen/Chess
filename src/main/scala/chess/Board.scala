@@ -6,6 +6,9 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
   lazy val pieces : Set[Piece] = board.flatten.flatten.toSet
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
+  lazy val kings = pieces.collect({ case king: King => king })
+  lazy val whiteIsChecked = kings.find(_.color == Color.White).exists(_.isChecked(this))
+  lazy val blackIsChecked = kings.find(_.color == Color.Black).exists(_.isChecked(this))
 
   def nextTurn(): Board = new Board(board, turn.opposite)
 
@@ -81,11 +84,10 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
     newBoard.isChecked(turn)
 
   def isChecked(color: Color): Boolean = 
-    pieces.exists { piece => 
-      piece match
-        case king: King if king.color == color => king.isChecked(this)
-        case _ => false
-    }
+    color.match
+      case Color.White => whiteIsChecked
+      case Color.Black => blackIsChecked
+    
 
   override def toString(): String = 
     board.reverse.map { row => 

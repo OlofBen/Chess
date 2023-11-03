@@ -32,12 +32,77 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
   def movedTo(to: Position): Piece = 
     King(to, color, hasMoved=true)
 
-  def isChecked(board: Board): Boolean = 
-    board.pieces.filterNot(_.isInstanceOf[King]).exists { piece => //Cant loop over legal moves, that would be infinite loop
-      piece.color != color && piece.moves(board).exists(_.to ==position)
-    }
+  def isChecked(board: Board): Boolean =    
+      isCheckedByKnight(board) || 
+      isCheckedByPawn(board) || 
+      isCheckedByRookOrQueen(board) || 
+      isCheckedByBishopOrQueen(board) || 
+      isCheckedByKing(board)      
+
+  def isCheckedByKnight(board : Board) = 
+    Knight.directions.map(position.moved).flatMap(board.get(_))
+      .exists(_ match 
+        case knight: Knight if knight.color != color => true
+        case _ => false
+      )
+  def isCheckedByPawn(board : Board) = 
+    (color match
+      case Color.White => Seq(position.moved(1, -1), position.moved(1, 1))
+      case Color.Black => Seq(position.moved(-1, -1), position.moved(-1, 1))
+    ).flatMap(board.get(_))
+    .exists(_ match 
+      case pawn: Pawn if pawn.color != color => true
+      case _ => false
+    )
+
+  def isCheckedByRookOrQueen(board : Board) = 
+    Rook.directions
+      .flatMap(dir => 
+        LazyList.iterate(position.moved(dir))(pos => pos.moved(dir))
+          .takeWhile(_.isInside)
+          .flatMap(board.get(_))
+          .headOption
+      ).exists(_ match 
+          case rook: Rook if rook.color != color => true
+          case queen: Queen if queen.color != color => true
+          case _ => false
+      )
+  def isCheckedByBishopOrQueen(board : Board) = 
+    Bishop.directions
+      .flatMap(
+        dir => 
+          LazyList.iterate(position.moved(dir))(pos => pos.moved(dir))
+            .takeWhile(_.isInside)
+            .flatMap(board.get(_))
+            .headOption)
+          .exists(_ match 
+              case bishop: Bishop if bishop.color != color => true
+              case queen: Queen if queen.color != color => true
+              case _ => false
+            )
+  def isCheckedByKing(board : Board)= 
+    King.directions
+      .map(position.moved)
+      .flatMap(board.get(_))
+      .exists(_ match 
+        case king: King if king.color != color => true
+        case _ => false
+      )
+
+
+    
+
+    
 
   override def toString(): String = 
     color match
       case Color.Black => "♔"
       case Color.White => "♚"
+
+object King: 
+  val directions: Vector[(Int, Int)] = 
+    (for 
+      rowDelta <- -1 to 1
+      colDelta <- -1 to 1
+      if !(rowDelta == 0 && colDelta == 0)
+    yield (rowDelta, colDelta)).toVector

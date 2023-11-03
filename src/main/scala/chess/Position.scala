@@ -3,6 +3,8 @@ package chess
 case class Position(row: Int, col: Int):
   def moved(rowDelta: Int = 0, colDelta: Int = 0): Position = 
     Position(row + rowDelta, col + colDelta)
+  def moved(dir: (Int, Int)): Position = 
+    moved(dir._1, dir._2)
 
   /**
     * @return the distance between two positions, a diagonal move counts as 1
@@ -27,3 +29,6 @@ object Position:
     val col = pos(0).toLower - 'a' + 1
     val row = pos(1).asDigit
     new Position(row, col)
+
+  def apply(pos : (Int, Int)): Position = 
+    new Position(pos._1, pos._2)
