@@ -1,7 +1,8 @@
-package chess
+package chess.engine
 
 import org.scalatest.funsuite.AnyFunSuite
 import chess.pieces._
+import chess._
 
 class EvaluationFunSuite extends AnyFunSuite:
   test("A new game should have a score of 0") {

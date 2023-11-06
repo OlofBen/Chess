@@ -1,10 +1,11 @@
+import chess.engine._
 import chess._
 
 object Game:
   var board = Board.startingPosition()
   println(board)
-  val whiteBot = Bot()
-  val blackBot = Bot()
+  val whiteBot = Engine()
+  val blackBot = Engine()
   @main
   def run() = 
     while true do 

@@ -1,5 +1,6 @@
-package chess
+package chess.engine
 
+import chess._
 import chess.pieces._
 
 object Evaluation:

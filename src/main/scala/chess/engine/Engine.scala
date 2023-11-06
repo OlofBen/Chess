@@ -1,6 +1,8 @@
-package chess
+package chess.engine
 
-class Bot():
+import chess._
+
+class Engine():
   private var evaluatePositions = Map.empty[Board, Int]
 
   def staticEvaluation(board : Board) = 

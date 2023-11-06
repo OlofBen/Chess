@@ -1,12 +1,14 @@
-package chess
+package chess.engine
+
 
 import org.scalatest.funsuite.AnyFunSuite
 import chess.pieces._
+import chess._
 
 class BotFunSuite extends AnyFunSuite:
   test("Bot should be able to calculate 4 moves in") {
     val board = Board.startingPosition()
-    val bot = Bot()
+    val bot = Engine()
     val move = bot.bestMove(board, 4)
     require(move != null)
   }
@@ -19,6 +21,6 @@ class BotFunSuite extends AnyFunSuite:
       Rook(Position("h7"), Color.White)
     )
     val board = Board.emptyWith(pieces)
-    val bestMove = Bot().bestMove(board, 1)
+    val bestMove = Engine().bestMove(board, 1)
     require(bestMove == Move("g6", "g8"), s"Wrong best move. Bot move $bestMove")
   }
