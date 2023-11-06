@@ -2,7 +2,7 @@ package chess
 
 import chess.pieces._
 
-class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White):
+case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White):
   lazy val pieces : Iterable[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
@@ -69,11 +69,10 @@ class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Co
       .remove(from.row, rookCol)
       .set(to.row, to.col, king.movedTo(to))
       .set(to.row, newRookCol, rook.movedTo(Position(to.row, newRookCol)))
-      
-
 
   def isPieceAt(position: Position): Boolean = 
     get(position.row, position.col).isDefined
+    
   def isPieceAtWhitColor(position: Position, color: Color): Boolean = 
     get(position.row, position.col).exists(_.color == color)
 
@@ -99,17 +98,9 @@ class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Co
       row.map { 
         case Some(piece) => piece.toString
         case None => "."
-      }.mkString
+      }.mkString(" ")
     }.mkString("\n")
 
-  override def hashCode(): Int = 
-    board.hashCode() - turn.hashCode()
-
-  override def equals(x: Any): Boolean = 
-    x match 
-      case other : Board => 
-        pieces == other.pieces && turn == other.turn
-      case _ => false
 
 
 object Board:
