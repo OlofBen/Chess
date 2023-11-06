@@ -13,32 +13,26 @@ trait Piece:
     directions: Vector[(Int,Int)], 
     colorOfPice: Color
   ): Iterable[Move] =
-    val moves = 
+    val moves : Iterable[Iterable[Move]] = 
       for (rowDelta, colDelta) <- directions yield 
-        LazyList
-          .iterate(startingPosition.moved(rowDelta, colDelta))(_.moved(rowDelta, colDelta))
-          .takeUntilOrTo(
-            Seq(!_.isInside, board.isPieceAtWhitColor(_, colorOfPice)),
-            Seq(board.isPieceAtWhitColor(_, colorOfPice.opposite))
-          )
-    moves.flatten.map(pos => Move(startingPosition, pos)) 
+        movesInLine(board, startingPosition, startingPosition, color, rowDelta, colDelta)
+    moves.flatten.toVector
 
-
-  extension (xs: Seq[Position]) 
-    def takeUntilOrTo(until: Seq[Position => Boolean], to: Seq[Position => Boolean]): Seq[Position] = 
-      var result = Vector.empty[Position]
-      val iterator = xs.iterator
-      var quit = false
-      while iterator.hasNext && !quit do 
-        val head = iterator.next()
-        if until.exists(_(head)) then 
-          quit = true
-        else if to.exists(_(head)) then 
-          result :+= head
-          quit = true
-        else 
-          result :+= head
-      result
+  private def movesInLine(
+      board : Board, 
+      startingPosition: Position,
+      current: Position, //Used for recursion
+      colorOfPice: Color, 
+      rowDelta: Int, 
+      colDelta: Int
+    ) : Vector[Move] = 
+      val nextPosition = current.moved(rowDelta, colDelta)
+      if !nextPosition.isInside then Vector.empty
+      else if board.isPieceAtWhitColor(nextPosition, colorOfPice) then Vector.empty
+      else if board.isPieceAtWhitColor(nextPosition, colorOfPice.opposite) then Vector(Move(startingPosition, nextPosition, isCapture = true))
+      else 
+        Move(startingPosition, nextPosition)
+        +: movesInLine(board, startingPosition, nextPosition, colorOfPice, rowDelta, colDelta)
 
 
 object Piece: 

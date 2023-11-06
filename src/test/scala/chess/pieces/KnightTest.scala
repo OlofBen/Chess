@@ -32,3 +32,14 @@ class KnightTest extends AnyFunSuite:
     val moves = knight.moves(board)
     require(moves.size == 7, s"Knight has ${moves.size} moves")
   }
+
+  test("Knight can take opponent piece") {
+    val board = Board.emptyWith(Vector(
+      Knight(Position("d4"), Color.White),
+      Pawn(Position("e6"), Color.Black)
+    ))
+    val knight = board.get(Position("d4")).get
+    val moves = knight.moves(board)
+    require(moves.size == 8, s"Knight has ${moves.size} moves")
+    require(moves.filter(_.isCapture).size == 1, s"Knight has ${moves.filter(_.isCapture).size} capture moves")
+  }

@@ -12,9 +12,9 @@ case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = fal
       Vector(position.moved(direction, - 1),
           position.moved(direction, + 1))
         .filter(board.isPieceAtWhitColor(_, color.opposite))
-        .filter(_.isInside)
         .map(to => Move(position, to, isCapture = true))
     (forwardMoves(board, direction) ++ diagonalMoves)
+      .filter(move => move.to.isInside)
 
   def forwardMoves(board: Board, direction: Int): Iterable[Move] = 
     lazy val oneForward = position.moved(rowDelta = direction)

@@ -10,10 +10,9 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
       if !(rowDelta == 0 && colDelta == 0)
       to = position.moved(rowDelta, colDelta)
       if to.isInside && !board.isPieceAtWhitColor(to, color)
-    yield Move(position, to)
+    yield Move(position, to, isCapture = board.isPieceAtWhitColor(to, color.opposite))
     ).toVector ++ castleMoves(board)
     
-
   def castleMoves(board: Board): Iterable[Move] = 
     if hasMoved || isChecked(board) then Vector.empty
     else 

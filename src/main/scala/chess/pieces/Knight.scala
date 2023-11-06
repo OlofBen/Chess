@@ -6,7 +6,9 @@ case class Knight(val position: Position, val color: Color) extends Piece:
   def moves(board: Board): Iterable[Move] =
     (for (rowDelta, colDelta) <- Knight.directions yield 
       position.moved(rowDelta, colDelta)
-    ).filter(_.isInside).filter(!board.isPieceAtWhitColor(_, color)).map(to => Move(position, to))
+    ).filter(_.isInside)
+      .filter(!board.isPieceAtWhitColor(_, color))
+      .map(to => Move(position, to, isCapture = board.isPieceAtWhitColor(to, color.opposite)))
               
   def movedTo(to: Position): Piece = 
     Knight(to, color)

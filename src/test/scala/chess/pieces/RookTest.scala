@@ -22,3 +22,14 @@ class RookTest extends AnyFunSuite:
     val moves = rook.moves(board)
     require(moves.size == 0, s"Rook has ${moves.size} moves")
   }
+
+  test("Rook capturing"){
+    val board = Board.emptyWith(Vector(
+      Rook(Position("a1"), Color.White),
+      Pawn(Position("a2"), Color.Black)
+    ))
+    val rook = board.get(Position("a1")).get
+    val moves = rook.moves(board)
+    require(moves.size == 8, s"Rook has ${moves.size} moves")
+    require(moves.filter(_.isCapture).size == 1, s"Rook has ${moves.filter(_.isCapture).size} capture moves")
+  }

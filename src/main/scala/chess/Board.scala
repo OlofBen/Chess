@@ -31,7 +31,7 @@ class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Co
   def move(move : Move): Board = 
     val from = move.from
     val to = move.to
-    require(isPieceAt(from), "No piece at position")
+    require(isPieceAt(from), s"No piece at position $from")
     val piece = get(from).get
     require(piece.color == turn, "Wrong color")
     require(!isPieceAtWhitColor(to, turn), "Can't take own piece")

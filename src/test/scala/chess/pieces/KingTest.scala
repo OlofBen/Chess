@@ -76,3 +76,13 @@ class KingTest extends AnyFunSuite:
     require(newBoard.get(Position("e8")).isEmpty)
     require(newBoard.get(Position("d8")).get.isInstanceOf[King], "Is not a king")
   }
+
+  test("King taking") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e8"), Color.Black),
+      Pawn(Position("e7"), Color.White)
+    )).nextTurn()
+    val moves = board.get(Position("e8")).get.moves(board)
+    val takingMoves = moves.filter(_.isCapture)
+    require(takingMoves.size == 1, s"King has ${takingMoves.size} taking moves")
+  }
