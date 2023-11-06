@@ -3,7 +3,7 @@ package chess.pieces
 import chess._
 
 case class Rook(val position: Position, val color: Color, val hasMoved: Boolean = false) extends Piece:
-  def moves(board: Board): Set[Move] =
+  def moves(board: Board): Iterable[Move] =
     straitMoves(board, position, Rook.directions, color) 
     
   def movedTo(to: Position): Piece = 

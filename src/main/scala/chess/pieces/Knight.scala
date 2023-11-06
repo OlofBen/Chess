@@ -3,10 +3,10 @@ package chess.pieces
 import chess._
 
 case class Knight(val position: Position, val color: Color) extends Piece:
-  def moves(board: Board): Set[Move] =
+  def moves(board: Board): Iterable[Move] =
     (for (rowDelta, colDelta) <- Knight.directions yield 
       position.moved(rowDelta, colDelta)
-    ).filter(_.isInside).filter(!board.isPieceAtWhitColor(_, color)).map(to => Move(position, to)).toSet
+    ).filter(_.isInside).filter(!board.isPieceAtWhitColor(_, color)).map(to => Move(position, to))
               
   def movedTo(to: Position): Piece = 
     Knight(to, color)

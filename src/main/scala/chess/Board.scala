@@ -3,7 +3,7 @@ package chess
 import chess.pieces._
 
 class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.White):
-  lazy val pieces : Set[Piece] = board.flatten.flatten.toSet
+  lazy val pieces : Iterable[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
   lazy val kings = pieces.collect({ case king: King => king })
@@ -35,11 +35,11 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
     val piece = get(from).get
     require(piece.color == turn, "Wrong color")
     require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
-    require(get(from).get.moves(this).contains(move), "Illegal move")
-    (if piece.isInstanceOf[King] && from.distanceTo(to) == 2 then 
+    require(get(from).get.moves(this).exists(_ == move), "Illegal move")
+    (if move.isCastle then 
       castleMove(from, to)
-    else if piece.isInstanceOf[Pawn] && (to.row == 1 || to.row == 8) then 
-      remove(from.row, from.col).set(to.row, to.col, Queen(to, piece.color))
+    else if move.promotionPiece.isDefined then 
+      remove(from.row, from.col).set(to.row, to.col,  move.promotionPiece.get)
     else
       val piece = get(from.row, from.col).get
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
@@ -47,16 +47,21 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
 
   def move(line: String): Board = 
     val from = Position(line.take(2))
-    val to = Position(line.drop(2))
-    move(Move(from, to))
-
-  def move(piecePos : (Piece, Position)): Board = 
-    move(Move(piecePos._1.position, piecePos._2))
+    val to = Position(line.drop(2).take(2))//need take two in case of promotion
+    var move = Move(from, to)
+    if get(from).get.isInstanceOf[King] && from.distanceTo(to) == 2 then 
+      move = move.copy(isCastle = true) 
+    else if line.size == 5 then 
+      val newPiece = Piece.fromLetter(line.last, to, turn)
+      move = move.copy(promotionPiece = Some(newPiece))
+    
+    this.move(move)
 
   def castleMove(from: Position, to: Position): Board = 
     require(get(from).get.isInstanceOf[King], "Can't castle with non king")
     val king = get(from).get
     val rookCol = if to.col == 3 then 1 else 8
+    
     require(get(to.row, rookCol).get.isInstanceOf[Rook], "Can't castle with non rook")
     val rook = get(to.row, rookCol).get
     val newRookCol = if to.col == 3 then 4 else 6
@@ -72,7 +77,7 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
   def isPieceAtWhitColor(position: Position, color: Color): Boolean = 
     get(position.row, position.col).exists(_.color == color)
 
-  lazy val legalMoves : Set[Move] = 
+  lazy val legalMoves : Iterable[Move] = 
     pieces.filter(_.color == turn).flatMap ( piece => 
       piece.moves(this)
     ).filter(move => 

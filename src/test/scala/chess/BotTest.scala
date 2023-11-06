@@ -11,7 +11,7 @@ class BotFunSuite extends AnyFunSuite:
     require(move != null)
   }
 
-  test("Mate in one") { //FINDS STALEMATE BUT NOT CHECKMATE // h6->h8 gets removed
+  test("Mate in one") { 
     val pieces = Seq(
       King(Position("a1"), Color.White),
       King(Position("a8"), Color.Black),

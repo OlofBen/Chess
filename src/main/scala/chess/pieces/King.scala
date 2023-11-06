@@ -3,7 +3,7 @@ package chess.pieces
 import chess._
 
 case class King(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
-  def moves(board: Board): Set[Move] = 
+  def moves(board: Board): Iterable[Move] = 
     (for 
       rowDelta <- -1 to 1
       colDelta <- -1 to 1
@@ -11,10 +11,11 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
       to = position.moved(rowDelta, colDelta)
       if to.isInside && !board.isPieceAtWhitColor(to, color)
     yield Move(position, to)
-    ).toSet ++ castleMoves(board)
+    ).toVector ++ castleMoves(board)
+    
 
-  def castleMoves(board: Board): Set[Move] = 
-    if hasMoved || isChecked(board) then Set.empty
+  def castleMoves(board: Board): Iterable[Move] = 
+    if hasMoved || isChecked(board) then Vector.empty
     else 
       board.pieces.collect {
         case rook: Rook 
@@ -26,16 +27,16 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
           => rook 
       }.map { rook => 
         val newKingCol = if rook.position.col == 1 then 3 else 7
-        Move(position, Position(position.row, newKingCol))
-      }.toSet
+        Move(position, Position(position.row, newKingCol), isCastle = true)
+      }.toVector
     
   def movedTo(to: Position): Piece = 
     King(to, color, hasMoved=true)
 
   def isChecked(board: Board): Boolean =    
-      isCheckedByKnight(board) || 
-      isCheckedByPawn(board) || 
-      isCheckedByRookOrQueen(board) || 
+      isCheckedByKnight(board)        || 
+      isCheckedByPawn(board)          || 
+      isCheckedByRookOrQueen(board)   || 
       isCheckedByBishopOrQueen(board) || 
       isCheckedByKing(board)      
 

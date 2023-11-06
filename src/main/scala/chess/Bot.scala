@@ -32,7 +32,7 @@ class Bot():
     val legalMoves = board.legalMoves
     var currentAlpha = alpha
     var currentBeta = beta
-    val getBestValue: Set[(Int, Move)] => (Int, Option[Move]) = 
+    val getBestValue: Iterable[(Int, Move)] => (Int, Option[Move]) = 
       if board.turn == Color.White then 
         _.maxByOption(_._1).map((v, m) => (v, Some(m))).getOrElse((Int.MinValue, None))
       else 
