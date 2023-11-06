@@ -3,7 +3,7 @@ package chess
 import chess.pieces._
 
 case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White):
-  lazy val pieces : Iterable[Piece] = board.flatten.flatten
+  lazy val pieces : Seq[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
   lazy val kings = pieces.collect({ case king: King => king })
@@ -72,11 +72,11 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
 
   def isPieceAt(position: Position): Boolean = 
     get(position.row, position.col).isDefined
-    
+
   def isPieceAtWhitColor(position: Position, color: Color): Boolean = 
     get(position.row, position.col).exists(_.color == color)
 
-  lazy val legalMoves : Iterable[Move] = 
+  lazy val legalMoves : Seq[Move] = 
     pieces.filter(_.color == turn).flatMap ( piece => 
       piece.moves(this)
     ).filter(move => 

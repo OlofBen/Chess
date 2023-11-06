@@ -4,6 +4,19 @@ import chess._
 import chess.pieces._
 
 object Evaluation:
+  private var evaluatePositions = Map.empty[Board, Int]
+  private var tableLookups = 0
+
+  def staticEvaluation(board : Board) =
+    evaluatePositions.get(board) match
+      case Some(value) => 
+        tableLookups += 1
+        value
+      case None => 
+        val value = evaluate(board)
+        evaluatePositions = evaluatePositions + (board -> value)
+        value
+
   def evaluate(board: Board): Int =
     if board.isCheckmate then 
       board.turn match
