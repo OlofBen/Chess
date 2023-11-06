@@ -2,7 +2,7 @@ package chess
 
 import chess.pieces._
 
-class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.White):
+class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White):
   lazy val pieces : Iterable[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
@@ -113,13 +113,13 @@ class Board private (board: Seq[Seq[Option[Piece]]], val turn : Color = Color.Wh
 
 
 object Board:
-  def apply(board: Seq[Seq[Option[Piece]]]): Board = 
+  def apply(board: Vector[Vector[Option[Piece]]]): Board = 
     require(board.size == 8, "Board must have 8 rows")
     require(board.forall(_.size == 8), "Board must have 8 columns")
     new Board(board)
 
   def empty: Board = 
-    val board = Seq.fill(8)(Seq.fill(8)(None))
+    val board = Vector.fill(8, 8)(None)
     Board(board)
 
   def emptyWith(piece: Seq[Piece]): Board = 
