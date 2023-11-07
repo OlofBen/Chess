@@ -25,11 +25,10 @@ object Evaluation:
     else if board.isStalemate then 
       0
     else
-      val whitePieces = board.pieces.filter(_.color == Color.White)
-      val blackPieces = board.pieces.filter(_.color == Color.Black)
-      val whiteScore = whitePieces.toSeq.map(score).sum
-      val blackScore = blackPieces.toSeq.map(score).sum
-      whiteScore - blackScore
+      val pieces = board.pieces
+      val scorePerPiece = pieces.map(piece => score(piece) + PieceSquareTable(piece))
+      val scorePiceColor = scorePerPiece.zip(pieces.map(_.color)).map((score, color) => score * (if color == Color.White then 1 else -1))
+      scorePiceColor.sum
 
     
   
