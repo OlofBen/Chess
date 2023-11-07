@@ -1,4 +1,4 @@
-package chess.engine
+package chess.engine.eval
 
 import org.scalatest.funsuite.AnyFunSuite
 import chess.pieces._

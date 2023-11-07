@@ -1,4 +1,4 @@
-package chess.engine
+package chess.engine.eval
 
 import chess._
 import chess.pieces._
@@ -33,13 +33,15 @@ object Evaluation:
 
     
   
-  def score(piece : Piece):Int = 
+  def score(piece : Piece):Int = //https://www.chessprogramming.org/Simplified_Evaluation_Function
     piece match
-      case _: King => 1000000
-      case _: Queen => 9
-      case _: Rook => 5
-      case _: Bishop => 3
-      case _: Knight => 3
-      case _: Pawn => 1
+      case _: King => 20000
+      case _: Queen => 900
+      case _: Rook => 500
+      case _: Bishop => 330
+      case _: Knight => 320
+      case _: Pawn => 100
+
+
 
 

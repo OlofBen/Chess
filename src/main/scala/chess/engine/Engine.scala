@@ -13,11 +13,11 @@ class Engine():
   private def evaluateMove(board: Board, move: Move, depth: Int, alpha : Int, beta : Int): (Int, Move) =
     val newBoard = board.move(move)
     if depth == 0 || board.legalMoves.isEmpty then
-      (Evaluation.staticEvaluation(newBoard), move)
+      (eval.Evaluation.staticEvaluation(newBoard), move)
     else
       val result = evaluate(newBoard, depth, alpha, beta)
       if result._2.isEmpty then 
-        (Evaluation.staticEvaluation(newBoard), move)
+        (eval.Evaluation.staticEvaluation(newBoard), move)
       else 
         (result._1, move)
       
