@@ -119,39 +119,23 @@ object Board:
       board.set(piece.position.row, piece.position.col, piece)
     }
 
+  def fromFen(fen: String): Board = 
+    val boardState = fen.split(" ").head
+    val rows = boardState.split("/").toVector
+    val board = rows.zipWithIndex.map { (row, rowNumber) => 
+      var colNumber = 0 // 0-indexed
+      row.flatMap { 
+        case c if c.isDigit => 
+          val n = c.asDigit
+          colNumber += n
+          Vector.fill(n)(None)
+        case c => 
+          colNumber += 1
+          val piece = Piece.fromLetter(c, Position(8 - rowNumber, colNumber), if c.isUpper then Color.White else Color.Black)
+          Vector(Some(piece))
+      }.toVector
+    }.reverse
+    Board(board)
+
   def startingPosition() : Board = 
-    val pieces = Seq(
-      Rook(Position("a1"), Color.White),
-      Knight(Position("b1"), Color.White),
-      Bishop(Position("c1"), Color.White),
-      Queen(Position("d1"), Color.White),
-      King(Position("e1"), Color.White),
-      Bishop(Position("f1"), Color.White),
-      Knight(Position("g1"), Color.White),
-      Rook(Position("h1"), Color.White),
-      Pawn(Position("a2"), Color.White),
-      Pawn(Position("b2"), Color.White),
-      Pawn(Position("c2"), Color.White),
-      Pawn(Position("d2"), Color.White),
-      Pawn(Position("e2"), Color.White),
-      Pawn(Position("f2"), Color.White),
-      Pawn(Position("g2"), Color.White),
-      Pawn(Position("h2"), Color.White),
-      Rook(Position("a8"), Color.Black),
-      Knight(Position("b8"), Color.Black),
-      Bishop(Position("c8"), Color.Black),
-      Queen(Position("d8"), Color.Black),
-      King(Position("e8"), Color.Black),
-      Bishop(Position("f8"), Color.Black),
-      Knight(Position("g8"), Color.Black),
-      Rook(Position("h8"), Color.Black),
-      Pawn(Position("a7"), Color.Black),
-      Pawn(Position("b7"), Color.Black),
-      Pawn(Position("c7"), Color.Black),
-      Pawn(Position("d7"), Color.Black),
-      Pawn(Position("e7"), Color.Black),
-      Pawn(Position("f7"), Color.Black),
-      Pawn(Position("g7"), Color.Black),
-      Pawn(Position("h7"), Color.Black),
-    )
-    emptyWith(pieces)
+    fromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
