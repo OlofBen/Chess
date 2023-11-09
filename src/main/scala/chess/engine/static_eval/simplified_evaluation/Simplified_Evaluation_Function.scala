@@ -1,22 +1,10 @@
-package chess.engine.eval
+package chess.engine.static_eval.simplified_evaluation_function
 
 import chess._
 import chess.pieces._
+import chess.engine.static_eval._
 
-object Evaluation:
-  private var evaluatePositions = Map.empty[Board, Int]
-  private var tableLookups = 0
-
-  def staticEvaluation(board : Board) =
-    evaluatePositions.get(board) match
-      case Some(value) => 
-        tableLookups += 1
-        value
-      case None => 
-        val value = evaluate(board)
-        evaluatePositions = evaluatePositions + (board -> value)
-        value
-
+object Simplified_Evaluation_Function extends StaticEvaluator:
   def evaluate(board: Board): Int =
     if board.isCheckmate then 
       board.turn match

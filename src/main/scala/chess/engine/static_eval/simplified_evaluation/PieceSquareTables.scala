@@ -1,4 +1,4 @@
-package chess.engine.eval
+package chess.engine.static_eval.simplified_evaluation_function
 
 import chess._
 import chess.pieces._

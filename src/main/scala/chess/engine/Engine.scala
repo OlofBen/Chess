@@ -1,10 +1,10 @@
 package chess.engine
 
 import chess._
+import chess.engine.static_eval._
+import chess.engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
 
-class Engine():
-
-  
+class Engine(eval: StaticEvaluator = new StaticEvaluatorWithLookUp(Simplified_Evaluation_Function)):
   
   def bestMove(board: Board, depth: Int): Move =
     val (score, move) = evaluate(board, depth, Int.MinValue, Int.MaxValue)
@@ -13,11 +13,11 @@ class Engine():
   private def evaluateMove(board: Board, move: Move, depth: Int, alpha : Int, beta : Int): (Int, Move) =
     val newBoard = board.move(move)
     if depth == 0 || board.legalMoves.isEmpty then
-      (eval.Evaluation.staticEvaluation(newBoard), move)
+      (eval.evaluate(newBoard), move)
     else
       val result = evaluate(newBoard, depth, alpha, beta)
       if result._2.isEmpty then 
-        (eval.Evaluation.staticEvaluation(newBoard), move)
+        (eval.evaluate(newBoard), move)
       else 
         (result._1, move)
       
