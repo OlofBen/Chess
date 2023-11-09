@@ -90,10 +90,6 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
       )
 
 
-    
-
-    
-
   override def toString(): String = 
     color match
       case Color.Black => "♔"

@@ -25,14 +25,14 @@ object PieceSquareTable:
 
 object PawnSquareTable extends PieceSquareTable:
   private val pawn = Array(
-    Array(0,  0,  0,  0,  0,  0,  0,  0),
+    Array( 0,  0,  0,  0,  0,  0,  0,  0),
     Array(50, 50, 50, 50, 50, 50, 50, 50),
     Array(10, 10, 20, 30, 30, 20, 10, 10),
-    Array(5,  5, 10, 25, 25, 10,  5,  5),
-    Array(0,  0,  0, 20, 20,  0,  0,  0),
-    Array(5, -5,-10,  0,  0,-10, -5,  5),
-    Array(5, 10, 10,-20,-20, 10, 10,  5),
-    Array(0,  0,  0,  0,  0,  0,  0,  0),
+    Array( 5,  5, 10, 25, 25, 10,  5,  5),
+    Array( 0,  0,  0, 20, 20,  0,  0,  0),
+    Array( 5, -5,-10,  0,  0,-10, -5,  5),
+    Array( 5, 10, 10,-20,-20, 10, 10,  5),
+    Array( 0,  0,  0,  0,  0,  0,  0,  0),
   )
   protected def get(row: Int, col: Int): Int = pawn(row)(col)
   
@@ -65,14 +65,14 @@ object BishopSquareTable extends PieceSquareTable:
 
 object RookSquareTable extends PieceSquareTable:
   private val rook = Array(
-    Array(0,  0,  0,  0,  0,  0,  0,  0),
-    Array(5, 10, 10, 10, 10, 10, 10,  5),
+    Array( 0,  0,  0,  0,  0,  0,  0,  0),
+    Array( 5, 10, 10, 10, 10, 10, 10,  5),
     Array(-5,  0,  0,  0,  0,  0,  0, -5),
     Array(-5,  0,  0,  0,  0,  0,  0, -5),
     Array(-5,  0,  0,  0,  0,  0,  0, -5),
     Array(-5,  0,  0,  0,  0,  0,  0, -5),
     Array(-5,  0,  0,  0,  0,  0,  0, -5),
-    Array(0,  0,  0,  5,  5,  0,  0,  0),
+    Array( 0,  0,  0,  5,  5,  0,  0,  0),
   )
   protected def get(row: Int, col: Int): Int = rook(row)(col)
 

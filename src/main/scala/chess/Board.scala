@@ -103,7 +103,6 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
   def withEnPassant(position: Position): Board = 
     this.copy(enPassantSquare = Some(position))
     
-
   override def toString(): String = 
     board.reverse.map { row => 
       row.map { 

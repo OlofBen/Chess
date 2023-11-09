@@ -20,8 +20,6 @@ class Engine(eval: StaticEvaluator = new StaticEvaluatorWithLookUp(Simplified_Ev
         (eval.evaluate(newBoard), move)
       else 
         (result._1, move)
-      
-      
 
   private def evaluate(board: Board, depth: Int, alpha : Int, beta : Int): (Int, Option[Move]) =
     val legalMoves = board.legalMoves

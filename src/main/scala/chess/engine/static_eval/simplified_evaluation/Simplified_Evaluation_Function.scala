@@ -18,8 +18,6 @@ object Simplified_Evaluation_Function extends StaticEvaluator:
       val scorePiceColor = scorePerPiece.zip(pieces.map(_.color)).map((score, color) => score * (if color == Color.White then 1 else -1))
       scorePiceColor.sum
 
-    
-  
   def score(piece : Piece):Int = //https://www.chessprogramming.org/Simplified_Evaluation_Function
     piece match
       case _: King => 20000

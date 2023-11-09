@@ -25,8 +25,6 @@ case class Position(row: Int, col: Int):
     val colDelta = (col - other.col) / 2
     moved(rowDelta, colDelta)
 
-
-
 object Position:
   val rowToLetter = Map(1 -> "a", 2 -> "b", 3 -> "c", 4 -> "d", 5 -> "e", 6 -> "f", 7 -> "g", 8 -> "h")
 
