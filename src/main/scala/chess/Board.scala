@@ -2,7 +2,7 @@ package chess
 
 import chess.pieces._
 
-case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White):
+case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White, enPassantSquare : Option[Position] = None):
   lazy val pieces : Seq[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
@@ -10,7 +10,9 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
   lazy val whiteIsChecked = kings.find(_.color == Color.White).exists(_.isChecked(this))
   lazy val blackIsChecked = kings.find(_.color == Color.Black).exists(_.isChecked(this))
 
-  def nextTurn(): Board = new Board(board, turn.opposite)
+  def nextTurn(enPassantSquare : Option[Position] = None): Board = 
+    this.copy(turn = turn.opposite, enPassantSquare = enPassantSquare)
+  
 
   /*
     If outside get returns None
@@ -20,13 +22,15 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     else board(row - 1)(col - 1)
   def get(position: Position): Option[Piece] = get(position.row, position.col)
 
+  def set(row : Int, col : Int, piece : Option[Piece]) : Board = 
+    val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, piece))
+    this.copy(board = newBoard)
+
   def set(row : Int, col : Int, piece : Piece) : Board = 
-    val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, Some(piece)))
-    new Board(newBoard, turn)
+    set(row, col, Some(piece))
 
   def remove(row : Int, col : Int) : Board = 
-    val newBoard = board.updated(row - 1, board(row - 1).updated(col - 1, None))
-    new Board(newBoard, turn)
+    set(row, col, None)
 
   def move(move : Move): Board = 
     val from = move.from
@@ -36,14 +40,18 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     require(piece.color == turn, "Wrong color")
     require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
     require(get(from).get.moves(this).exists(_ == move), "Illegal move")
+
+    val enPassantSquare = if move.isPawnMovingTwo then Some(from.halfwayTo(to)) else None
+
     (if move.isCastle then 
       castleMove(from, to)
     else if move.promotionPiece.isDefined then 
       remove(from.row, from.col).set(to.row, to.col,  move.promotionPiece.get)
+    else if move.isEnPassantCapture then 
+      remove(from.row, to.col).remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
     else
-      val piece = get(from.row, from.col).get
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
-    ).nextTurn()
+    ).nextTurn(enPassantSquare)
 
   def move(line: String): Board = 
     val from = Position(line.take(2))
@@ -91,6 +99,9 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     color.match
       case Color.White => whiteIsChecked
       case Color.Black => blackIsChecked
+
+  def withEnPassant(position: Position): Board = 
+    this.copy(enPassantSquare = Some(position))
     
 
   override def toString(): String = 

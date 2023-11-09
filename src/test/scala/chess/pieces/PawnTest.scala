@@ -25,4 +25,15 @@ class PawnTest extends AnyFunSuite:
     require(moves.size == 3, s"Pawn has ${moves.size} moves")
     require(moves.filter(_.isCapture).size == 1, s"Pawn has ${moves.filter(_.isCapture).size} capture moves")
   }
+
+  test("Pawn can en passant") {
+    val board = Board.emptyWith(Vector(
+      Pawn(Position("d5"), Color.White, hasMoved = true),
+      Pawn(Position("c5"), Color.Black, hasMoved = true)
+    )).withEnPassant(Position("c6"))
+    val pawn = board.get(Position("d5")).get
+    val moves = pawn.moves(board)
+    require(moves.size == 2, s"Pawn has ${moves.size} moves: $moves")
+    require(moves.filter(_.isEnPassantCapture).size == 1, s"Pawn has ${moves.filter(_.isEnPassantCapture).size} en passant capture moves")
+  }
  

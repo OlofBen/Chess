@@ -3,28 +3,37 @@ package chess.pieces
 import chess._
 
 case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
-  def moves(board: Board): Iterable[Move] = // Todo: En passant
-    val direction = color match
+  lazy val direction = color match
       case Color.White => 1
       case Color.Black => -1
-    
-    val diagonalMoves = 
-      Vector(position.moved(direction, - 1),
-          position.moved(direction, + 1))
-        .filter(board.isPieceAtWhitColor(_, color.opposite))
-        .map(to => Move(position, to, isCapture = true))
-    (forwardMoves(board, direction) ++ diagonalMoves)
+
+  def moves(board: Board): Iterable[Move] = // Todo: En passant
+    (forwardMoves(board, direction) ++ diagonalMoves(board, direction))
       .filter(move => move.to.isInside)
 
-  def forwardMoves(board: Board, direction: Int): Iterable[Move] = 
+  private def forwardMoves(board: Board, direction: Int): Iterable[Move] = 
     lazy val oneForward = position.moved(rowDelta = direction)
     lazy val twoForward = position.moved(rowDelta = 2 * direction)
     if board.isPieceAt(oneForward) then Vector.empty
-    else if !hasMoved && !board.isPieceAt(twoForward) then Vector(oneForward, twoForward).map(to => Move(position, to))
+    else if !hasMoved && !board.isPieceAt(twoForward) then Vector(Move(position, oneForward), Move(position, twoForward, isPawnMovingTwo = true))
     else 
       if isPromotion(oneForward) then 
         promotionMoves(oneForward) 
       else Vector(Move(position, oneForward))
+  
+  private def diagonalMoves(board: Board, direction: Int) = 
+    val captureSquares = Vector(position.moved(direction, - 1), position.moved(direction, + 1))
+    val normalCapture = 
+      captureSquares
+        .filter(board.isPieceAtWhitColor(_, color.opposite))
+        .map(to => Move(position, to, isCapture = true))
+
+    val enPassantCapture = 
+      captureSquares
+        .filter(board.enPassantSquare.contains)
+        .map(to => Move(position, to, isCapture = true, isEnPassantCapture = true))
+    normalCapture ++ enPassantCapture
+    
 
  
     

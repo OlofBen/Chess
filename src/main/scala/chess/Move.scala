@@ -4,7 +4,8 @@ case class Move(
     from: Position, 
     to: Position, 
     isCapture: Boolean = false, 
-    isCheck: Boolean = false, 
+    isPawnMovingTwo: Boolean = false,
+    isEnPassantCapture: Boolean = false,
     promotionPiece: Option[Piece] = None,
     isCastle: Boolean = false
   ):

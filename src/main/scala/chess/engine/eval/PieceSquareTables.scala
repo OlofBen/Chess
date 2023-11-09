@@ -89,7 +89,7 @@ object QueenSquareTable extends PieceSquareTable:
   )
   protected def get(row: Int, col: Int): Int = queen(row)(col)
 
-object KingSquareTable extends PieceSquareTable:
+object KingSquareTable extends PieceSquareTable:// Only for eraly - midle game
   private val king = Array(
     Array(-30,-40,-40,-50,-50,-40,-40,-30),
     Array(-30,-40,-40,-50,-50,-40,-40,-30),
