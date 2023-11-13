@@ -1,6 +1,5 @@
 package chess.engine
 
-import chess.pieces._
 import chess._
 
 object Sorting:

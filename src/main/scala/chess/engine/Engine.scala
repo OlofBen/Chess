@@ -34,7 +34,7 @@ class Engine(eval: StaticEvaluator = new StaticEvaluatorWithLookUp(Simplified_Ev
     val sortedMoves = legalMoves.sortWith(Sorting.compareMoves)
 
     val scoresAndMoves = sortedMoves.collect( move => move match     
-      case _ if beta > alpha => //Else we have already found a better move
+      case _ if currentBeta > currentAlpha => //Else we have already found a better move
         val value = evaluateMove(board, move, depth - 1, currentAlpha, currentBeta)._1
         if board.turn == Color.White then
           currentAlpha = Math.max(currentAlpha, value)

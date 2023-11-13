@@ -7,7 +7,7 @@ object Game:
   val whiteBot = Engine()
   val blackBot = Engine()
   @main
-  def run() = 
+  def runTextGame() = 
     while true do 
       val t0 = System.currentTimeMillis()
       

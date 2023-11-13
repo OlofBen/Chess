@@ -9,7 +9,8 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
   lazy val kings = pieces.collect({ case king: King => king })
   lazy val whiteIsChecked = kings.find(_.color == Color.White).exists(_.isChecked(this))
   lazy val blackIsChecked = kings.find(_.color == Color.Black).exists(_.isChecked(this))
-
+  lazy val isGameOver = isCheckmate || isStalemate
+  
   def nextTurn(enPassantSquare : Option[Position] = None): Board = 
     this.copy(turn = turn.opposite, enPassantSquare = enPassantSquare)
   
