@@ -3,6 +3,7 @@ import chariot.model.Event
 import chariot.model.GameStateEvent
 import chess.Board
 import chariot.model.Enums.Status
+import scala.util.Try
 
 object LichessBot:
   val token : String = scala.io.Source.fromFile("token.txt").mkString
@@ -11,7 +12,8 @@ object LichessBot:
 
   @main
   def start() = 
-    checkForEvents()
+    while true do
+      Try{checkForEvents()} // if we crash, we want to restart
 
 
   def checkForEvents() =
