@@ -92,7 +92,7 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
       !moveLeadsToCheck(move)
     )
   
-  def moveLeadsToCheck(move: Move): Boolean = 
+  def moveLeadsToCheck(move: Move): Boolean = //Todo: Optimize
     val newBoard = this.move(move)
     newBoard.isChecked(turn)
 

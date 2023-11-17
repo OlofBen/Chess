@@ -15,6 +15,7 @@ object Game:
       println(s"Time: ${System.currentTimeMillis() - t0}ms")
       board = board.move(whiteMove)
       println(board)
+
       val t1 = System.currentTimeMillis()
       
       val blackMove : Move = blackBot.bestMove(board, 4)
