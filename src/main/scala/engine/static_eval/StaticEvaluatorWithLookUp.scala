@@ -1,4 +1,4 @@
-package chess.engine.static_eval
+package engine.static_eval
 
 import chess._
 

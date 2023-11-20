@@ -1,4 +1,4 @@
-package chess.engine
+package engine
 
 
 import org.scalatest.funsuite.AnyFunSuite

@@ -1,11 +1,11 @@
-package chess.engine
+package engine
 
+import engine.search.AlfaBeta
+import engine.search._
+import engine.static_eval._
 import chess._
-import chess.engine.static_eval._
-import chess.engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
-import chess.engine.search.Search
-import chess.engine.search.AlfaBeta
-import chess.engine.search.SearchAll
+import engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
+
 
 class Engine(search : Search = AlfaBeta , eval: StaticEvaluator = new StaticEvaluatorWithLookUp(Simplified_Evaluation_Function)):
   

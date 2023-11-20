@@ -1,4 +1,4 @@
-import chess.engine._
+import engine._
 import chess._
 
 object Game:

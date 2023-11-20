@@ -1,9 +1,9 @@
-package chess.engine.static_eval
+package engine.static_eval
 
 import org.scalatest.funsuite.AnyFunSuite
 import chess.pieces._
 import chess._
-import chess.engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
+import engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
 
 class EvaluationFunSuite extends AnyFunSuite:
   test("A new game should have a score of 0") {

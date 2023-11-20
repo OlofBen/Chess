@@ -1,8 +1,7 @@
-package chess.engine.search
+package engine.search
 
 import chess._
-import chess.engine.static_eval.StaticEvaluator
-
+import engine.static_eval.StaticEvaluator
 
 object AlfaBeta extends Search:
 

@@ -1,8 +1,8 @@
-package chess.engine.static_eval.simplified_evaluation_function
+package engine.static_eval.simplified_evaluation_function
 
 import chess._
 import chess.pieces._
-import chess.engine.static_eval._
+import engine.static_eval.StaticEvaluator
 
 object Simplified_Evaluation_Function extends StaticEvaluator:
   def evaluate(board: Board): Int =

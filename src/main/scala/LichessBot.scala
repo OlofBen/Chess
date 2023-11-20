@@ -4,11 +4,12 @@ import chariot.model.GameStateEvent
 import chess.Board
 import chariot.model.Enums.Status
 import scala.util.Try
+import engine.Engine
 
 object LichessBot:
   val token : String = scala.io.Source.fromFile("token.txt").mkString
   val botClient = Client.auth(token).bot()
-  val engine = chess.engine.Engine()
+  val engine = Engine()
 
   @main
   def start() = 
