@@ -7,6 +7,7 @@ trait Piece:
   val color: Color
   def moves(board : Board): Iterable[Move]
   def movedTo(to: Position): Piece
+  def isAtStartingPosition: Boolean
 
   protected def straitMoves(
     board :Board, startingPosition: Position, 

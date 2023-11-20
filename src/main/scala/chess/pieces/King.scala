@@ -3,7 +3,7 @@ package chess.pieces
 import chess._
 
 case class King(val position: Position, val color: Color, hasMoved:Boolean = false) extends Piece:
-  def moves(board: Board): Iterable[Move] = 
+  override def moves(board: Board): Iterable[Move] = 
     (for 
       rowDelta <- -1 to 1
       colDelta <- -1 to 1
@@ -29,7 +29,7 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
         Move(position, Position(position.row, newKingCol), isCastle = true)
       }.toVector
     
-  def movedTo(to: Position): Piece = 
+  override def movedTo(to: Position): Piece = 
     King(to, color, hasMoved=true)
 
   def isChecked(board: Board): Boolean =    
@@ -89,6 +89,8 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
         case _ => false
       )
 
+  override def isAtStartingPosition: Boolean = 
+    position == (if color == Color.White then Position(1, 5) else Position(8, 5))
 
   override def toString(): String = 
     color match

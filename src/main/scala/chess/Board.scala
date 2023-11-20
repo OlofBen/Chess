@@ -143,10 +143,14 @@ object Board:
         case c => 
           colNumber += 1
           val piece = Piece.fromLetter(c, Position(8 - rowNumber, colNumber), if c.isUpper then Color.White else Color.Black)
-          Vector(Some(piece))
+          if piece.isAtStartingPosition then  
+            Vector(Some(piece))
+          else
+            Vector(Some(piece.movedTo(piece.position))) //Piece has moved
       }.toVector
     }.reverse
     Board(board)
 
   def startingPosition() : Board = 
     fromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  

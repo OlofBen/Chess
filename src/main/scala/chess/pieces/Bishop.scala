@@ -3,15 +3,22 @@ package chess.pieces
 import chess._
 
 case class Bishop(val position: Position, val color: Color) extends Piece:
-  def moves(board: Board): Iterable[Move] =
+  override def moves(board: Board): Iterable[Move] =
     straitMoves(board, position, Bishop.directions, color)
-  def movedTo(to: Position): Piece = 
+
+  override def movedTo(to: Position): Piece = 
     Bishop(to, color)
+  
+  override def isAtStartingPosition: Boolean = 
+    position == (if color == Color.White then Position(1, 3) else Position(8, 3)) ||
+    position == (if color == Color.White then Position(1, 6) else Position(8, 6))
 
   override def toString(): String = 
     color match
       case Color.Black => "♗"
       case Color.White => "♝"
+  
+
     
 
 object Bishop:

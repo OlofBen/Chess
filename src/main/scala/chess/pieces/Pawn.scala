@@ -7,7 +7,7 @@ case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = fal
       case Color.White => 1
       case Color.Black => -1
 
-  def moves(board: Board): Iterable[Move] = // Todo: En passant
+  override def moves(board: Board): Iterable[Move] = // Todo: En passant
     (forwardMoves(board, direction) ++ diagonalMoves(board, direction))
       .filter(move => move.to.isInside)
 
@@ -49,11 +49,14 @@ case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = fal
     )
     
 
-  def movedTo(to: Position): Piece = 
+  override def movedTo(to: Position): Piece = 
     Pawn(to, color, hasMoved = true)
 
   def movedToAndPromotedTo(to: Position, piece: Piece): Piece = 
     piece.movedTo(to)
+
+  override def isAtStartingPosition = 
+    position.row == (if color == Color.White then 2 else 7)
 
   override def toString(): String = 
     color match
