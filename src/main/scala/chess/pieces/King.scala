@@ -21,8 +21,12 @@ case class King(val position: Position, val color: Color, hasMoved:Boolean = fal
           if rook.color == color 
           && !rook.hasMoved 
           && rook.position.row == position.row 
-          && ((rook.position.col == 1 && (2 to 4).forall(col => !board.isPieceAt(Position(position.row, col)))) ||
-              (rook.position.col == 8 && (6 to 7).forall(col => !board.isPieceAt(Position(position.row, col)))))
+          && (
+            (rook.position.col == 1 && (2 to 4).forall(col => !board.isPieceAt(Position(position.row, col))) && !board.isCheckedAt(Position(position.row, 4), color)) ||
+            (rook.position.col == 8 && (6 to 7).forall(col => !board.isPieceAt(Position(position.row, col))) && !board.isCheckedAt(Position(position.row, 4), color))
+            ) 
+              // RUTORNA I MELLAN FÅR INTE VARA HOTADE
+              // Lägg till en kung på varje ruta och kolla om den är hotad
           => rook 
       }.map { rook => 
         val newKingCol = if rook.position.col == 1 then 3 else 7

@@ -43,12 +43,12 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     require(get(from).get.moves(this).exists(_ == move), "Illegal move")
 
     val enPassantSquare = if move.isPawnMovingTwo then Some(from.halfwayTo(to)) else None
-
     (if move.isCastle then 
       castleMove(from, to)
     else if move.promotionPiece.isDefined then 
       remove(from.row, from.col).set(to.row, to.col,  move.promotionPiece.get)
     else if move.isEnPassantCapture then 
+      println("En passant capture")
       remove(from.row, to.col).remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
     else
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
@@ -100,6 +100,12 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     color.match
       case Color.White => whiteIsChecked
       case Color.Black => blackIsChecked
+
+  /** @returns true if an enemy piece would check a king at position @position  */
+  def isCheckedAt(position: Position, color: Color): Boolean = 
+    val fakeKing = King(position, color)
+    fakeKing.isChecked(this)
+    
 
   def withEnPassant(position: Position): Board = 
     this.copy(enPassantSquare = Some(position))
