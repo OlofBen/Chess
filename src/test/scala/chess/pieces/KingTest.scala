@@ -86,6 +86,7 @@ class KingTest extends AnyFunSuite:
     val takingMoves = moves.filter(_.isCapture)
     require(takingMoves.size == 1, s"King has ${takingMoves.size} taking moves")
   }
+
   test("King can't castle if d1 is threatend"){
     val board = Board.emptyWith(Vector(
       King(Position("e1"), Color.White),
@@ -95,4 +96,15 @@ class KingTest extends AnyFunSuite:
     val king = board.get(Position("e1")).get
     val moves = king.moves(board)
     require(!moves.toSet.contains(Move("e1","c1")), "King can castle")
+  }
+
+  test("King cant castle if checked") {
+    val board = Board.emptyWith(Vector(
+      King(Position("e1"), Color.White),
+      Rook(Position("a1"), Color.White),
+      Rook(Position("e5"), Color.Black)
+    ))
+    val king = board.get(Position("e1")).get
+    val moves = king.moves(board)
+    require(!moves.toSet.contains(Move("e1","g1")), "King can castle")
   }
