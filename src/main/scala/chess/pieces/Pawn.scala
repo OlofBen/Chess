@@ -32,10 +32,7 @@ case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = fal
       captureSquares
         .filter(board.enPassantSquare.contains)
         .map(to => Move(position, to, isCapture = true, isEnPassantCapture = true))
-    normalCapture ++ enPassantCapture
-    
-
- 
+    normalCapture ++ enPassantCapture 
     
   def isPromotion(newPos : Position) : Boolean = 
     color match
@@ -47,7 +44,6 @@ case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = fal
     promotionPieces.map(piece => 
       Move(position, newPos, promotionPiece = Some(piece))
     )
-    
 
   override def movedTo(to: Position): Piece = 
     Pawn(to, color, hasMoved = true)

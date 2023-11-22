@@ -36,4 +36,11 @@ class PawnTest extends AnyFunSuite:
     require(moves.size == 2, s"Pawn has ${moves.size} moves: $moves")
     require(moves.filter(_.isEnPassantCapture).size == 1, s"Pawn has ${moves.filter(_.isEnPassantCapture).size} en passant capture moves")
   }
+
+  test("Pre programed pos 2") {
+    val board = Board.fromFen("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ")
+      .move("a2a4")
+
+    require(board.legalMoves.toSet.contains(Move("b4","a3")), "Pawn can't take en passant")
+  }
  

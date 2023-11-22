@@ -2,7 +2,7 @@ package chess
 
 import chess.pieces._
 
-case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color = Color.White, enPassantSquare : Option[Position] = None):
+case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = Color.White, enPassantSquare : Option[Position] = None):
   lazy val pieces : Seq[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
@@ -48,7 +48,6 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     else if move.promotionPiece.isDefined then 
       remove(from.row, from.col).set(to.row, to.col,  move.promotionPiece.get)
     else if move.isEnPassantCapture then 
-      println("En passant capture")
       remove(from.row, to.col).remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
     else
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
@@ -58,8 +57,13 @@ case class Board private (board: Vector[Vector[Option[Piece]]], val turn : Color
     val from = Position(line.take(2))
     val to = Position(line.drop(2).take(2))//need take two in case of promotion
     var move = Move(from, to)
-    if get(from).get.isInstanceOf[King] && from.distanceTo(to) == 2 then 
+    val piece = get(from).get
+    if piece.isInstanceOf[King] && from.distanceTo(to) == 2 then 
       move = move.copy(isCastle = true) 
+    else if piece.isInstanceOf[Pawn] && from.distanceTo(to) == 2 then 
+      move = move.copy(isPawnMovingTwo = true)
+    else if piece.isInstanceOf[Pawn] && from.col != to.col then 
+      move = move.copy(isEnPassantCapture = true)
     else if line.size == 5 then 
       val newPiece = Piece.fromLetter(line.last, to, turn)
       move = move.copy(promotionPiece = Some(newPiece))

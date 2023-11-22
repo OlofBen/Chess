@@ -21,8 +21,8 @@ case class Position(row: Int, col: Int):
     row >= 1 && row <= 8 && col >= 1 && col <= 8
 
   def halfwayTo(other: Position): Position = 
-    val rowDelta = (row - other.row) / 2
-    val colDelta = (col - other.col) / 2
+    val rowDelta = (other.row - row) / 2
+    val colDelta = (other.col - col) / 2
     moved(rowDelta, colDelta)
 
 object Position:
