@@ -21,18 +21,25 @@ case class Pawn(val position: Position, val color: Color, hasMoved:Boolean = fal
         promotionMoves(oneForward) 
       else Vector(Move(position, oneForward))
   
+  private def normalCaptures(board : Board, captureSquares : Iterable[Position]): Iterable[Move] = 
+    val withoutPromotion : Iterable[Move] = 
+        captureSquares
+          .filter(board.isPieceAtWhitColor(_, color.opposite))
+          .map(to => Move(position, to, isCapture = true))
+    if isPromotion(captureSquares.head) then
+      withoutPromotion.flatMap(move => 
+        val promotionPieces = Vector(Queen(move.to, color), Rook(move.to, color), Bishop(move.to, color), Knight(move.to, color))
+        promotionPieces.map(piece => move.copy(promotionPiece = Some(piece))))
+    else withoutPromotion
+
+  private def enPassantCapture(board : Board, captureSquares : Iterable[Position]): Iterable[Move] = 
+    captureSquares
+      .filter(board.enPassantSquare.contains)
+      .map(to => Move(position, to, isCapture = true, isEnPassantCapture = true))
+
   private def diagonalMoves(board: Board, direction: Int) = 
     val captureSquares = Vector(position.moved(direction, - 1), position.moved(direction, + 1))
-    val normalCapture = 
-      captureSquares
-        .filter(board.isPieceAtWhitColor(_, color.opposite))
-        .map(to => Move(position, to, isCapture = true))
-
-    val enPassantCapture = 
-      captureSquares
-        .filter(board.enPassantSquare.contains)
-        .map(to => Move(position, to, isCapture = true, isEnPassantCapture = true))
-    normalCapture ++ enPassantCapture 
+    normalCaptures(board, captureSquares) ++ enPassantCapture(board, captureSquares)
     
   def isPromotion(newPos : Position) : Boolean = 
     color match
