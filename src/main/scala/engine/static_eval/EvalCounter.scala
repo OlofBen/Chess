@@ -10,3 +10,5 @@ class EvalCounter(eval : StaticEvaluator) extends StaticEvaluator:
 
   def getCounter() = counter
 
+  def resetCounter() = counter = 0
+
