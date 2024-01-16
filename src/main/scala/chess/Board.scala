@@ -10,6 +10,19 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
   lazy val whiteIsChecked = kings.find(_.color == Color.White).exists(_.isChecked(this))
   lazy val blackIsChecked = kings.find(_.color == Color.Black).exists(_.isChecked(this))
   lazy val isGameOver = isCheckmate || isStalemate
+  lazy val legalMoves : Seq[Move] = 
+    pieces.filter(_.color == turn).flatMap ( piece => 
+      piece.moves(this)
+    ).filter(move => 
+      !moveLeadsToCheck(move)
+    )
+  lazy val boardString = 
+    board.reverse.map { row => 
+      row.map { 
+        case Some(piece) => piece.toString
+        case None => "."
+      }.mkString(" ")
+    }.mkString("\n")
   
   def nextTurn(enPassantSquare : Option[Position] = None): Board = 
     this.copy(turn = turn.opposite, enPassantSquare = enPassantSquare)
@@ -21,6 +34,7 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
   def get(row : Int, col : Int) : Option[Piece] = 
     if row < 1 || row > 8 || col < 1 || col > 8 then None
     else board(row - 1)(col - 1)
+
   def get(position: Position): Option[Piece] = get(position.row, position.col)
 
   def set(row : Int, col : Int, piece : Option[Piece]) : Board = 
@@ -53,7 +67,7 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
       remove(from.row, from.col).set(to.row, to.col, piece.movedTo(to))
     ).nextTurn(enPassantSquare)
 
-  def move(line: String): Board = 
+  def move(line: String): Board = //Should be moved to move?
     val from = Position(line.take(2))
     val to = Position(line.drop(2).take(2))//need take two in case of promotion
     var move = Move(from, to)
@@ -86,15 +100,9 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
   def isPieceAt(position: Position): Boolean = 
     get(position.row, position.col).isDefined
 
+  //if outside returns false
   def isPieceAtWhitColor(position: Position, color: Color): Boolean = 
     get(position.row, position.col).exists(_.color == color)
-
-  lazy val legalMoves : Seq[Move] = 
-    pieces.filter(_.color == turn).flatMap ( piece => 
-      piece.moves(this)
-    ).filter(move => 
-      !moveLeadsToCheck(move)
-    )
   
   def moveLeadsToCheck(move: Move): Boolean = //Todo: Optimize
     val newBoard = this.move(move)
@@ -108,21 +116,12 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
   /** @returns true if an enemy piece would check a king at position @position  */
   def isCheckedAt(position: Position, color: Color): Boolean = 
     val fakeKing = King(position, color)
-    fakeKing.isChecked(this)
-    
+    fakeKing.isChecked(this) 
 
   def withEnPassant(position: Position): Board = 
     this.copy(enPassantSquare = Some(position))
     
-  override def toString(): String = 
-    board.reverse.map { row => 
-      row.map { 
-        case Some(piece) => piece.toString
-        case None => "."
-      }.mkString(" ")
-    }.mkString("\n")
-
-
+  override def toString(): String = boardString
 
 object Board:
   def apply(board: Vector[Vector[Option[Piece]]]): Board = 
