@@ -5,7 +5,7 @@ import engine.static_eval.StaticEvaluator
 import scala.annotation.static
 
 object SearchAll extends Search:
-  var isRecording = false // Used for testing
+  var isRecording = false  // Used for testing
   var movesPreformed = Vector.empty[Move] // Used for testing
 
   override def search(staticEval: StaticEvaluator)(board: Board, depth: Int): Move = 

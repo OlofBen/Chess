@@ -11,4 +11,4 @@ object Sorting:
     if move1.isCapture then move1Score += 100
     if move2.isCapture then move2Score += 100
     
-    move1Score > move2Score
+    move1Score >= move2Score
