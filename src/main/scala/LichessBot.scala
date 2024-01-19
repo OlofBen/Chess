@@ -14,7 +14,7 @@ object LichessBot:
   @main
   def start() = 
     while true do
-      Try{checkForEvents()} // if we crash, we want to restart
+      println(Try{checkForEvents()}) // if we crash, we want to restart
       Thread.sleep(1000)
 
 
