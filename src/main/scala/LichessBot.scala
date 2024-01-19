@@ -7,7 +7,7 @@ import scala.util.Try
 import engine.Engine
 
 object LichessBot:
-  val token : String = scala.io.Source.fromFile("token.txt").mkString
+  val token : String = scala.io.Source.fromFile("token.txt").mkString.strip()
   val botClient = Client.auth(token).bot()
   val engine = Engine()
 
