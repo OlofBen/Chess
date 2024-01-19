@@ -13,7 +13,6 @@ class Engine(search : Search = AlfaBeta , eval: StaticEvaluator = new StaticEval
   
   def bestMove(board: Board, depth: Int): Move = 
     val result = searchDepth(board, depth)
-    assert(result != null, "No move found")
     result
 
   def bestMoveAfterTime(board: Board, timeInMillis: Int): Move = //TODO Save the best moves from the previous iteration

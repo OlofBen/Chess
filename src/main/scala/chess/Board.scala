@@ -50,11 +50,7 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
   def move(move : Move): Board = 
     val from = move.from
     val to = move.to
-    require(isPieceAt(from), s"No piece at position $from")
     val piece = get(from).get
-    require(piece.color == turn, "Wrong color")
-    require(!isPieceAtWhitColor(to, turn), "Can't take own piece")
-    require(get(from).get.moves(this).exists(_ == move), "Illegal move")
 
     val enPassantSquare = if move.isPawnMovingTwo then Some(from.halfwayTo(to)) else None
     (if move.isCastle then 
@@ -85,11 +81,9 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
     this.move(move)
 
   def castleMove(from: Position, to: Position): Board = 
-    require(get(from).get.isInstanceOf[King], "Can't castle with non king")
     val king = get(from).get
     val rookCol = if to.col == 3 then 1 else 8
     
-    require(get(to.row, rookCol).get.isInstanceOf[Rook], "Can't castle with non rook")
     val rook = get(to.row, rookCol).get
     val newRookCol = if to.col == 3 then 4 else 6
     remove(from.row, from.col)
@@ -125,8 +119,6 @@ case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = C
 
 object Board:
   def apply(board: Vector[Vector[Option[Piece]]]): Board = 
-    require(board.size == 8, "Board must have 8 rows")
-    require(board.forall(_.size == 8), "Board must have 8 columns")
     new Board(board)
 
   def empty: Board = 
