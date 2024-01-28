@@ -2,7 +2,11 @@ package chess
 
 import chess.pieces._
 
-case class Board private (board: Vector[Vector[Option[Piece]]], turn : Color = Color.White, enPassantSquare : Option[Position] = None):
+case class Board private (
+  board: Vector[Vector[Option[Piece]]], 
+  turn : Color = Color.White, 
+  enPassantSquare : Option[Position] = None
+  ):  
   lazy val pieces : Seq[Piece] = board.flatten.flatten
   lazy val isCheckmate = legalMoves.isEmpty && isChecked(turn)
   lazy val isStalemate = legalMoves.isEmpty && !isChecked(turn)
