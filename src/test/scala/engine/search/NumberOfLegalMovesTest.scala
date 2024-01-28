@@ -4,12 +4,14 @@ import chess._
 import org.scalatest.funsuite.AnyFunSuite
 import engine.static_eval.EvalCounter
 import engine.static_eval.MockEval
+import engine.static_eval.StaticEvaluator
 
 class NumberOfLegalMovesTest extends AnyFunSuite:
 
   test("Number of positions reached from stating position") {
     val counter = new EvalCounter(MockEval)
-    val search = SearchAll.search(counter)
+    given StaticEvaluator = counter
+    val search = SearchAll.search
     val startingBoard = Board.startingPosition()
     search(startingBoard, 1)
     assert(counter.getCounter() == 20, "Should be 20 moves, but was " + counter.getCounter())
@@ -30,7 +32,8 @@ class NumberOfLegalMovesTest extends AnyFunSuite:
 
   test("Position 2"){
     val counter = new EvalCounter(MockEval)
-    val search = SearchAll.search(counter)
+    given StaticEvaluator = counter
+    val search = SearchAll.search
 
     val board = Board.fromFen("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ")
 
@@ -58,7 +61,8 @@ class NumberOfLegalMovesTest extends AnyFunSuite:
 
   test("Position 3"){
     val counter = new EvalCounter(MockEval)
-    val search = SearchAll.search(counter)
+    given StaticEvaluator = counter
+    val search = SearchAll.search
 
     val board = Board.fromFen("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -")
 
@@ -83,7 +87,8 @@ class NumberOfLegalMovesTest extends AnyFunSuite:
 
   test("Position 4"){
     val counter = new EvalCounter(MockEval)
-    val search = SearchAll.search(counter)
+    given StaticEvaluator = counter
+    val search = SearchAll.search
 
     val board = Board.fromFen("r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1")
 
@@ -109,7 +114,9 @@ class NumberOfLegalMovesTest extends AnyFunSuite:
 
   test("Position 5"){
     val counter = new EvalCounter(MockEval)
-    val search = SearchAll.search(counter)
+    given StaticEvaluator = counter
+    
+    val search = SearchAll.search
     val startingBoard = Board.fromFen("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8")
     search(startingBoard, 1)
     assert(counter.getCounter() == 44, "Should be 44 moves, but was " + counter.getCounter())

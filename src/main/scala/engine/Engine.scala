@@ -7,9 +7,9 @@ import chess._
 import engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
 
 
-class Engine(search : Search = AlfaBeta , eval: StaticEvaluator = new StaticEvaluatorWithLookUp(Simplified_Evaluation_Function)):
+class Engine(search : Search = AlfaBeta):
   
-  val searchDepth = search.search(eval)
+  val searchDepth = search.search
   
   def bestMove(board: Board, depth: Int): Move = 
     val result = searchDepth(board, depth)
