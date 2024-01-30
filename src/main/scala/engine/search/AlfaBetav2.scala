@@ -9,7 +9,10 @@ import scala.math.{max, min}
 object AlfaBetaV2 extends Search: 
 
   override def search(board: Board, depth: Int): Move = 
-    bestMove(board, depth, Double.MinValue, Double.MaxValue)._1
+    var currentBestMove = board.legalMoves.head
+    for currentSearch <- 1 to depth do  
+      currentBestMove = bestMove(board, currentSearch, Double.MinValue, Double.MaxValue)._1
+    currentBestMove
 
 
   case class BoardSearch(depth: Int, sortedMoves : Iterable[Move])
@@ -17,6 +20,7 @@ object AlfaBetaV2 extends Search:
   var sorted : Map[Board, BoardSearch] = Map.empty
 
   def bestMove(board: Board, depth: Int, alfa : Double, beta : Double): (Move, Double) = 
+    //What if there are no leagal moves?
     if ! sorted.contains(board) then search(board, depth, alfa, beta)  
     else 
       val boardSearch = sorted(board)
@@ -27,10 +31,11 @@ object AlfaBetaV2 extends Search:
     searchWithOrder(board, depth, orderedMoves, alfa, beta) 
 
   def searchWithOrder(board: Board, depth: Int, sortedMoves : Iterable[Move], alfa : Double, beta : Double): (Move, Double) = 
-    if depth == 1 then 
+    if sortedMoves.size == 0 then (null, evaluateStatic(board))
+    else if depth == 1 then 
       depthOne(board, sortedMoves, alfa, beta)
     else 
-      evaluate(board, sortedMoves, alfa, beta, (nextBoard, alfa, beta) => bestMove(nextBoard, depth - 1, alfa, beta)._2)
+      evaluate(board, sortedMoves, alfa, beta, (nextBoard, a, b) => bestMove(nextBoard, depth - 1, a, b)._2)
 
 
   def evaluate(
@@ -45,10 +50,10 @@ object AlfaBetaV2 extends Search:
     var beta = beta0
     var bestScore = if isMaximizingPlayer then Double.MinValue else Double.MaxValue
     var bestMove : Move = moves.head
-    var shouldBreak = true
+    var shouldBreak = false
     val movesIterator : Iterator[Move]= moves.iterator
     var evaluatedMoves = Vector.empty[(Move, Double)]
-    while movesIterator.hasNext && shouldBreak do
+    while movesIterator.hasNext && !shouldBreak do
       val move = movesIterator.next()
       val newBoard = board.move(move)
       val score = nextDepth(newBoard, alfa, beta)
@@ -75,5 +80,7 @@ object AlfaBetaV2 extends Search:
     (bestMove, bestScore)
 
   def depthOne(board: Board, moves : Iterable[Move], alfa: Double, beta: Double)(using staticEval: StaticEvaluator): (Move, Double) = 
-    val finalDepth: (Board, Double, Double) => Double = (board, _, _) => staticEval.evaluate(board)
+    val finalDepth: (Board, Double, Double) => Double = (board, _, _) => evaluateStatic(board)
     evaluate(board, moves, alfa, beta, finalDepth)
+
+  def evaluateStatic(board: Board)(using staticEval: StaticEvaluator) = staticEval.evaluate(board)
