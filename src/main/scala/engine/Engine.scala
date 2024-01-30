@@ -2,9 +2,7 @@ package engine
 
 import engine.search.AlfaBeta
 import engine.search._
-import engine.static_eval._
 import chess._
-import engine.static_eval.simplified_evaluation_function.Simplified_Evaluation_Function
 
 
 class Engine(search : Search = AlfaBeta):

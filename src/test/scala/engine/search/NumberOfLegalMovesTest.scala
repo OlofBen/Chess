@@ -69,13 +69,11 @@ class NumberOfLegalMovesTest extends AnyFunSuite:
     search(board, 1)
     assert(counter.getCounter() == 14, "Should be 14 moves, but was " + counter.getCounter())
     counter.resetCounter()
-
     
     search(board, 2)
     assert(counter.getCounter() == 191, "Should be 191 moves, but was " + counter.getCounter())
     counter.resetCounter()
 
-    
     search(board, 3)
     assert(counter.getCounter() == 2812, "Should be 2812 moves, but was " + counter.getCounter())
     counter.resetCounter()
@@ -95,12 +93,10 @@ class NumberOfLegalMovesTest extends AnyFunSuite:
     search(board, 1)
     assert(counter.getCounter() == 6, "Should be 6 moves, but was " + counter.getCounter())
     counter.resetCounter()
-
     
     search(board, 2)
     assert(counter.getCounter() == 264, "Should be 264 moves, but was " + counter.getCounter())
     counter.resetCounter()
-
     
     search(board, 3)
     assert(counter.getCounter() == 9467, "Should be 9467 moves, but was " + counter.getCounter())
