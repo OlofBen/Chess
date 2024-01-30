@@ -7,9 +7,9 @@ import engine.Sorting
 object AlfaBeta extends Search:
 
   override def search(board: Board, depth: Int): Move = 
-    alphaBetaIterative(board, depth, Int.MinValue, Int.MaxValue)._2
+    alphaBetaIterative(board, depth, Double.MinValue, Double.MaxValue)._2
 
-  def alphaBetaIterative(board: Board, depth: Int, alpha : Int, beta: Int)(using staticEval : StaticEvaluator): (Int, Move) = //returns best move and its score
+  def alphaBetaIterative(board: Board, depth: Int, alpha : Double, beta: Double)(using staticEval : StaticEvaluator): (Double, Move) = //returns best move and its score
     import scala.math.{max, min}
     lazy val isMaximizingPlayer = board.turn == Color.White
     lazy val movesIterator = board.legalMoves.sortWith(Sorting.compareMoves).iterator
@@ -19,7 +19,7 @@ object AlfaBeta extends Search:
     if depth == 0 || board.isGameOver then 
       (staticEval.evaluate(board), bestMove)
     else if isMaximizingPlayer then
-      var bestValue = Int.MinValue
+      var bestValue = Double.MinValue
       var currentAlpha = alpha
       while movesIterator.hasNext && !cutoff do 
         val move = movesIterator.next
@@ -32,7 +32,7 @@ object AlfaBeta extends Search:
       (bestValue, bestMove)
 
     else 
-      var bestValue = Int.MaxValue
+      var bestValue = Double.MaxValue
       var currentBeta = beta
       while movesIterator.hasNext && !cutoff do 
         val move = movesIterator.next

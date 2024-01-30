@@ -4,7 +4,7 @@ import chess.Board
 
 class EvalCounter(eval : StaticEvaluator) extends StaticEvaluator:
   private var counter = 0
-  override def evaluate(board: Board): Int = 
+  override def evaluate(board: Board): Double = 
     counter += 1
     eval.evaluate(board)
 

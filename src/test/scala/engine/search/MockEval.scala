@@ -3,4 +3,4 @@ package engine.static_eval
 import chess._
 
 object MockEval extends StaticEvaluator:
-  override def evaluate(board: Board): Int = 0 
+  override def evaluate(board: Board): Double = 0 

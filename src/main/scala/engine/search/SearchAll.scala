@@ -17,7 +17,7 @@ object SearchAll extends Search:
         
     bestMoveOption.getOrElse(throw new Exception("No move found"))
 
-  def recursiveSearch(board: Board, depth: Int)(using staticEval: StaticEvaluator): Int = 
+  def recursiveSearch(board: Board, depth: Int)(using staticEval: StaticEvaluator): Double = 
     if depth == 0 || board.isGameOver then 
       staticEval.evaluate(board)
     else 
@@ -27,7 +27,7 @@ object SearchAll extends Search:
       else 
         scoresAll.min
 
-  private def scores(board: Board, depth: Int): Iterable[Int] = 
+  private def scores(board: Board, depth: Int): Iterable[Double] = 
     if isRecording then 
       movesPreformed ++= board.legalMoves
     board.legalMoves.map( move => 

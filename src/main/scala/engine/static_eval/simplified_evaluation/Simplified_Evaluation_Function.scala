@@ -5,11 +5,11 @@ import chess.pieces._
 import engine.static_eval.StaticEvaluator
 
 object Simplified_Evaluation_Function extends StaticEvaluator:
-  def evaluate(board: Board): Int =
+  def evaluate(board: Board): Double =
     if board.isCheckmate then 
       board.turn match
-        case Color.White => Int.MinValue
-        case Color.Black => Int.MaxValue
+        case Color.White => Double.MinValue
+        case Color.Black => Double.MaxValue
     else if board.isStalemate then 
       0
     else

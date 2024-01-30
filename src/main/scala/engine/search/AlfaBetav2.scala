@@ -5,6 +5,7 @@ import chess.Board
 import chess.Color
 import engine.static_eval.StaticEvaluator
 import scala.math.{max, min}
+import util.MaxSizeMap
 
 object AlfaBetaV2 extends Search: 
 
@@ -17,7 +18,7 @@ object AlfaBetaV2 extends Search:
 
   case class BoardSearch(depth: Int, sortedMoves : Iterable[Move])
 
-  var sorted : Map[Board, BoardSearch] = Map.empty
+  var sorted : Map[Board, BoardSearch] = MaxSizeMap.empty()
 
   def bestMove(board: Board, depth: Int, alfa : Double, beta : Double): (Move, Double) = 
     //What if there are no leagal moves?
